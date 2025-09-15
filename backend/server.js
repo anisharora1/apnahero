@@ -35,10 +35,17 @@ app.use(cors({
   optionsSuccessStatus: 200
 }))
 
-const _dirname=path.resolve()
+const _dirname = path.resolve()
 
-app.use(express.json())
+app.use(express.json({ limit: "10mb" }))
+
+// Health check endpoint for keeping the server alive
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'ok' })
+})
+
 app.use(clerkAuth)
+
 
 //routes
 app.use('/api/services', service)
@@ -69,7 +76,7 @@ io.use((socket, next) => {
 
 // ✅ Socket.io connection
 io.on("connection", (socket) => {
-//  console.log("⚡ New client connected:", socket.id, "User: ", socket.userId);
+  //  console.log("⚡ New client connected:", socket.id, "User: ", socket.userId);
 
   activeUsers.set(socket.userId, socket.id)
   socket.join(`user:${socket.userId}`)
@@ -93,10 +100,10 @@ io.on("connection", (socket) => {
       }
 
       socket.join(`conversation:${conversationId}`);
-      
+
       // Track that this user is in this conversation
       userConversations.get(socket.userId).add(conversationId);
-      
+
       console.log(`${socket.userId} joined conversation: ${conversationId}`);
 
       // Notify other participants that user is online
@@ -113,12 +120,12 @@ io.on("connection", (socket) => {
   // Leave conversation room
   socket.on("leaveConversation", ({ conversationId }) => {
     socket.leave(`conversation:${conversationId}`);
-    
+
     // Remove from user conversations tracking
     if (userConversations.has(socket.userId)) {
       userConversations.get(socket.userId).delete(conversationId);
     }
-    
+
     console.log(`${socket.userId} left conversation: ${conversationId}`);
 
     // Notify other participants that user went offline
@@ -198,12 +205,12 @@ const shouldShowNotification = (senderId, receiverId, conversationId) => {
   if (!isUserOnline(receiverId)) {
     return true; // Show notification for offline users
   }
-  
+
   // Don't show notification if receiver is in the same conversation
   if (isUserInConversation(receiverId, conversationId)) {
     return false; // User is actively in this conversation
   }
-  
+
   // Show notification if user is online but not in this conversation
   return true;
 };
@@ -215,9 +222,9 @@ app.set('isUserInConversation', isUserInConversation);
 app.set('shouldShowNotification', shouldShowNotification);
 
 app.use(express.static(path.join(_dirname, "/frontend/dist")))
-// app.get("*",(_, res)=>{
-//   res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
-// })
+app.get("*", (_, res) => {
+  res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
+})
 
 server.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
