@@ -53,11 +53,11 @@ app.use('/api/services', service)
 app.use('/api/conversations', conversation)
 app.use('/api/messages', message)
 
-// Serve static files and handle client-side routing after API routes
-app.use(express.static(path.join(_dirname, "/frontend/dist")))
-app.get("*", (_, res) => {
-  res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
-})
+// // Serve static files and handle client-side routing after API routes
+// app.use(express.static(path.join(_dirname, "/frontend/dist")))
+// app.get("*", (_, res) => {
+//   res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
+// })
 
 const activeUsers = new Map()
 const userConversations = new Map() // Track which conversations each user is currently in
