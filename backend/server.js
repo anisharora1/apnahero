@@ -48,9 +48,16 @@ app.use(clerkAuth)
 
 
 //routes
+// API routes
 app.use('/api/services', service)
 app.use('/api/conversations', conversation)
 app.use('/api/messages', message)
+
+// Serve static files and handle client-side routing after API routes
+app.use(express.static(path.join(_dirname, "/frontend/dist")))
+app.get("*", (_, res) => {
+  res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
+})
 
 const activeUsers = new Map()
 const userConversations = new Map() // Track which conversations each user is currently in
@@ -220,11 +227,6 @@ app.set('io', io);
 app.set('isUserOnline', isUserOnline);
 app.set('isUserInConversation', isUserInConversation);
 app.set('shouldShowNotification', shouldShowNotification);
-
-app.use(express.static(path.join(_dirname, "/frontend/dist")))
-app.get("*", (_, res) => {
-  res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
-})
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${port}`);
