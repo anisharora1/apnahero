@@ -226,7 +226,7 @@ app.get("*", (_, res) => {
   res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
 })
 
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${port}`);
   connectDB();
 });

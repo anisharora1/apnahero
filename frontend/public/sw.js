@@ -35,7 +35,6 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-
   event.respondWith(
     caches.match(request).then((cached) => {
       const networkFetch = fetch(request)

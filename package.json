@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon backend/server.js",
     "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend",
-    "start": "nodemon backend/server.js"
+    "start": "node backend/server.js"
   },
   "author": "anish",
   "license": "ISC",
@@ -20,7 +20,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.10",
     "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
