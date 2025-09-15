@@ -1,23 +1,19 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
+import About from './pages/About'
 import Footer from './components/Footer'
+import Services from './pages/Services'
 import ProtectedRoute from './components/ProtectedRoute'
-
-// Lazy load all pages
-const Home = lazy(() => import('./pages/Home'))
-const About = lazy(() => import('./pages/About'))
-const Services = lazy(() => import('./pages/Services'))
-const CreateService = lazy(() => import('./pages/CreateService'))
-const MyServices = lazy(() => import('./pages/MyServices'))
-const UpdateService = lazy(() => import('./pages/UpdateService'))
-const ViewService = lazy(() => import('./pages/ViewService'))
-const MessageRoom = lazy(() => import('./pages/MessageRoom'))
-const MessageList = lazy(() => import('./pages/MessageList'))
+import CreateService from './pages/CreateService'
+import MyServices from './pages/MyServices'
+import UpdateService from './pages/UpdateService'
+import Home from './pages/Home'
+import ViewService from './pages/ViewService'
+import MessageRoom from './pages/MessageRoom'
+import MessageList from './pages/MessageList'
 import { NotificationProvider } from './contexts/NotificationContext'
 import NotificationManager from './components/NotificationManager'
-import LoadingSpinner from './components/LoadingSpinner'
 
 // Wrapper component that includes notification system
 const AppWithNotifications = ({ children }) => (
@@ -30,7 +26,7 @@ const AppWithNotifications = ({ children }) => (
 function App() {
   const router = createBrowserRouter([
     {
-      element: <AppWithNotifications><><Navbar /><Suspense fallback={<LoadingSpinner />}><Home /></Suspense><Footer /></></AppWithNotifications>,
+      element: <AppWithNotifications><><Navbar /><Home /><Footer /></></AppWithNotifications>,
       path: '/'
     },
     {
@@ -51,11 +47,11 @@ function App() {
     },
     {
       element: <AppWithNotifications><ProtectedRoute><MessageRoom /></ProtectedRoute></AppWithNotifications>,
-      path: '/chat/:id'
+      path:'/chat/:id'
     },
     {
       element: <AppWithNotifications><ProtectedRoute><MessageList /></ProtectedRoute></AppWithNotifications>,
-      path: '/chats'
+      path:'/chats'
     },
     {
       element: <AppWithNotifications><ProtectedRoute><CreateService /></ProtectedRoute></AppWithNotifications>,

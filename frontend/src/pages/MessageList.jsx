@@ -1,11 +1,7 @@
 import { Card } from '@/components/ui/card'
 import { useAuth, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
-import VirtualScroll from '@/components/VirtualScroll';
-import { useThrottle, useCache } from '@/hooks/performanceHooks';
-import OptimizedImage from '@/components/OptimizedImage';
-import LazyLoad from '@/components/LazyLoad';
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaComment } from "react-icons/fa";
 import { Button } from '@/components/ui/button';
@@ -58,7 +54,7 @@ function MessageList() {
                 window.dispatchEvent(new CustomEvent('newMessageNotification', {
                     detail: notification
                 }));
-
+                
                 // Refresh conversations to show updated unread counts
                 fetchConversations();
             });
@@ -202,7 +198,7 @@ function MessageList() {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <h3 className="font-semibold text-gray-900">
-                                                {conversation?.otherParticipantInfo?.firstName || (conversation.userRole === 'seller' ? 'Buyer' : 'Seller')}
+                                               {conversation?.otherParticipantInfo?.firstName || (conversation.userRole === 'seller' ? 'Buyer' : 'Seller')}
                                             </h3>
                                             <p className="text-sm text-gray-600 truncate">
                                                 About: {conversation.serviceId?.title}

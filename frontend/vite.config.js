@@ -22,11 +22,23 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['./src/components/ui'],
-        },
-      },
+        manualChunks: (id) => {
+          // Chunk for node_modules
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'vendor-react';
+            }
+            if (id.includes('@clerk')) {
+              return 'vendor-clerk';
+            }
+            return 'vendor'; // all other node_modules
+          }
+          // Chunk for UI components
+          if (id.includes('components/ui/')) {
+            return 'ui-components';
+          }
+        }
+      }
     },
     chunkSizeWarningLimit: 1000,
     sourcemap: false,

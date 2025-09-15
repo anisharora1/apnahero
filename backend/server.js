@@ -53,6 +53,7 @@ app.use('/api/services', service)
 app.use('/api/conversations', conversation)
 app.use('/api/messages', message)
 
+// Serve static files from the React app
 app.use(express.static(path.join(_dirname, "/frontend/dist")))
 
 // // Serve static files and handle client-side routing after API routes
