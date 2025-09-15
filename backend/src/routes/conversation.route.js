@@ -8,6 +8,6 @@ router.use(validateUser)
 router.post('/',createOrGetConversation)
 router.get('/', getUserConversations)
 router.get('/:conversationId',getConversation)
-router.delete('/:conversation', deleteConversation)
+router.delete('/:conversationId', deleteConversation)
 
 export default router
