@@ -155,7 +155,7 @@ function Navbar() {
 
                     </div>
                     <button type='button' className='inline-flex flex-col items-center justify-center px-5 rounded-full hover:bg-gray-800  group'>
-                        <Link to={'/my-services'}><FaRegWindowRestore size={25} color='white' /></Link>
+                        <Link to={'/my-services'}><FaRegWindowRestore size={25 } color='white' /></Link>
                         <p className='text-sm'>Ads</p>
                     </button>
                     <button type='button' className='inline-flex flex-col items-center justify-center px-5 rounded-full hover:bg-gray-800 group'>

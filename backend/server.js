@@ -56,10 +56,6 @@ app.use('/api/messages', message)
 // Serve static files from the React app
 app.use(express.static(path.join(_dirname, "/frontend/dist")))
 
-// // Serve static files and handle client-side routing after API routes
-// app.get("*", (_, res) => {
-//   res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
-// })
 
 const activeUsers = new Map()
 const userConversations = new Map() // Track which conversations each user is currently in
@@ -230,7 +226,7 @@ app.set('isUserOnline', isUserOnline);
 app.set('isUserInConversation', isUserInConversation);
 app.set('shouldShowNotification', shouldShowNotification);
 
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
   connectDB();
 });

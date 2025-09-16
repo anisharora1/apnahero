@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
 import About from './pages/About'
@@ -15,6 +15,7 @@ import MessageList from './pages/MessageList'
 import { NotificationProvider } from './contexts/NotificationContext'
 import NotificationManager from './components/NotificationManager'
 
+
 // Wrapper component that includes notification system
 const AppWithNotifications = ({ children }) => (
   <NotificationProvider>
@@ -23,18 +24,19 @@ const AppWithNotifications = ({ children }) => (
   </NotificationProvider>
 )
 
+
 function App() {
   const router = createBrowserRouter([
     {
-      element: <AppWithNotifications><><Navbar /><Home /><Footer /></></AppWithNotifications>,
+      element: <AppWithNotifications><Navbar /><Home /><Footer /></AppWithNotifications>,
       path: '/'
     },
     {
-      element: <AppWithNotifications><><Navbar /><Services /></></AppWithNotifications>,
+      element: <AppWithNotifications><Navbar /><Services /></AppWithNotifications>,
       path: '/services'
     },
     {
-      element: <AppWithNotifications><><Navbar /><About /><Footer /></></AppWithNotifications>,
+      element: <AppWithNotifications><Navbar /><About /><Footer /></AppWithNotifications>,
       path: '/about'
     },
     {
@@ -58,13 +60,14 @@ function App() {
       path: '/create-service'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><><Navbar /><MyServices /></></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><MyServices /></ProtectedRoute></AppWithNotifications>,
       path: '/my-services'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><><Navbar /><UpdateService /></></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><UpdateService /></ProtectedRoute></AppWithNotifications>,
       path: `/services/update-service/:id`
     }
+    
   ])
 
   return <RouterProvider router={router} />
