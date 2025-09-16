@@ -78,7 +78,7 @@ function Navbar() {
   
     return (
         <>
-            <div className='py-2 fixed w-full dark:bg-gray-800 dark:border-b-gray-600 border-b-gray-300 border-2 bg-white z-50'>
+            <div className='py-2 fixed w-full border-b-gray-300 border-2 bg-white z-50'>
                 <div className='max-w-7xl mx-auto flex justify-between items-center px-4 md:px-0'>
                     {/* logo section */}
                     <div className='flex gap-7 items-center'>
@@ -92,7 +92,7 @@ function Navbar() {
                         <div className='relative'>
                             <Input type="text"
                                 placeholder="Search"
-                                className="border border-gray-700 dark:bg-gray-900 bg-gray-300 w-[220px] md:w-[300px]"
+                                className="border border-gray-700 bg-gray-300 w-[220px] md:w-[300px]"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyDown={handleKeyDown}

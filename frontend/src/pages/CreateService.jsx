@@ -165,12 +165,12 @@ function CreateService() {
             
             <div className='max-w-6xl mx-auto mt-8'>
                
-                <Card className="w-full bg-white dark:bg-gray-800 p-5 space-y-2">
+                <Card className="w-full bg-white p-5 space-y-2">
                     <h1 className=' text-4xl font-bold '>Basic Service Information</h1>
                     <p className=''>Make changes to your services here. Click publish when you're done.</p>
                     <div className='pt-10'>
                         <Label>Title</Label>
-                        <Input type="text" placeholder="Enter a title" name="title" value={content.title} onChange={handleChange} className="dark:border-gray-300" />
+                        <Input type="text" placeholder="Enter a title" name="title" value={content.title} onChange={handleChange} />
                     </div>
                     <div>
                         <Label>Description</Label>
@@ -186,19 +186,19 @@ function CreateService() {
                     <div className='pt-10 flex gap-5'>
                         <div>
                             <Label>Price:</Label>
-                            <Input type="number" placeholder="Enter a price" name="price" value={content.price} onChange={handleChange} className="dark:border-gray-300" />
+                            <Input type="number" placeholder="Enter a price" name="price" value={content.price} onChange={handleChange} />
 
                         </div>
                         <div>
                             <Label>Phone:</Label>
-                            <Input type="tel" placeholder="Enter a phone number" name="phoneNumber" value={content.phoneNumber} onChange={handleChange} className="dark:border-gray-300" />
+                            <Input type="tel" placeholder="Enter a phone number" name="phoneNumber" value={content.phoneNumber} onChange={handleChange} />
 
                         </div>
                     </div>
                     <div className='pt-10 flex gap-5'>
                         <div>
                             <Label>Category</Label>
-                            <Select onValueChange={selectCategory} className="dark:border-gray-300">
+                            <Select onValueChange={selectCategory}>
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder="Select a category" />
                                 </SelectTrigger>
@@ -223,7 +223,7 @@ function CreateService() {
 
                         <div>
                             <Label>Location:</Label>
-                            <Input type="text" placeholder="Enter a location" name="location" value={content.location} onChange={handleChange} className="dark:border-gray-300" />
+                            <Input type="text" placeholder="Enter a location" name="location" value={content.location} onChange={handleChange} />
                         </div>
                     </div>
                     <div>
@@ -233,7 +233,7 @@ function CreateService() {
                             type="file"
                             onChange={selectThumbnail}
                             accept="image/*"
-                            className="w-fit dark:border-gray-300"
+                            className="w-fit"
                             multiple
                         />
                         <span className='text-sm text-red-500'>* Max 4 images, 1MB each</span>

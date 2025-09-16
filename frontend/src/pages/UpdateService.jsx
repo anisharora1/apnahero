@@ -199,7 +199,7 @@ function UpdateService() {
         return (
             <div className='pb-10 px-3 pt-20'>
                 <div className='max-w-6xl mx-auto mt-8'>
-                    <Card className="w-full bg-white dark:bg-gray-800 p-5">
+                    <Card className="w-full bg-white p-5">
                         <p>Service not found...</p>
                         <Button onClick={() => navigate('/my-services')}>Back to My Services</Button>
                     </Card>
@@ -211,7 +211,7 @@ function UpdateService() {
     return (
         <div className='pb-10 px-3 pt-20'>
             <div className='max-w-6xl mx-auto mt-8'>
-                <Card className="w-full bg-white dark:bg-gray-800 p-5 space-y-2">
+                <Card className="w-full bg-white p-5 space-y-2">
                 {/* <Button onClick={() => navigate('/')} className='text-2xl cursor-pointer'><FaArrowLeft /></Button> */}
                     <h1 className='text-4xl font-bold'>Basic Service Information</h1>
                     <p className=''>Make changes to your service here. Click publish when you're done.</p>
@@ -231,7 +231,6 @@ function UpdateService() {
                             name="title"
                             value={content.title}
                             onChange={handleChange}
-                            className="dark:border-gray-300"
                         />
                     </div>
                     <div>
@@ -254,7 +253,6 @@ function UpdateService() {
                                 name="price"
                                 value={content.price}
                                 onChange={handleChange}
-                                className="dark:border-gray-300"
                             />
                         </div>
                         <div>
@@ -265,7 +263,6 @@ function UpdateService() {
                                 name="phoneNumber"
                                 value={content.phoneNumber}
                                 onChange={handleChange}
-                                className="dark:border-gray-300"
                             />
                         </div>
                     </div>
@@ -300,7 +297,6 @@ function UpdateService() {
                                 name="location"
                                 value={content.location}
                                 onChange={handleChange}
-                                className="dark:border-gray-300"
                             />
                         </div>
                     </div>
@@ -311,7 +307,7 @@ function UpdateService() {
                             type="file"
                             onChange={selectThumbnail}
                             accept="image/*"
-                            className="w-fit dark:border-gray-300"
+                            className="w-fit"
                             multiple
                         />
                         <caption>Max 4 images, 1MB each</caption>

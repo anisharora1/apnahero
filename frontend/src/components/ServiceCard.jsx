@@ -43,7 +43,7 @@ function ServiceCard({ service }) {
     }
 
     return (
-        <div onClick={viewMore} className="bg-white dark:bg-gray-800 dark:border-gray-600 p-2 rounded-2xl shadow-lg border hover:scale-105 transition-all">
+        <div onClick={viewMore} className="bg-white p-2 rounded-2xl shadow-lg border hover:scale-105 transition-all">
             {/* Image Container */}
             <div className="relative h-40 overflow-hidden">
                 {imageUrls.map((url, index) => (

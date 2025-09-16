@@ -53,7 +53,7 @@ const deleteBlog=async(id)=>{
   return (
    <div className='pb-10 pt-20 h-screen'>
             <div className='max-w-6xl mx-auto mt-8 '>
-                <Card className="w-full p-5 space-y-2 dark:bg-gray-800">
+                <Card className="w-full p-5 space-y-2">
 
                     <Table>
                         <TableCaption>A list of your recent services.</TableCaption>
