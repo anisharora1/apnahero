@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --mode production --target es2015",
+    "build": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.43.1",
-    "@esbuild/win32-x64": "^0.25.9",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.7",
@@ -20,7 +19,6 @@
     "@reduxjs/toolkit": "^2.8.2",
     "autoprefixer": "^10.4.0",
     "axios": "^1.11.0",
-    "backend": "file:..",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jodit-react": "^5.2.19",
