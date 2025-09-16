@@ -310,7 +310,7 @@ function UpdateService() {
                             className="w-fit"
                             multiple
                         />
-                        <caption>Max 4 images, 1MB each</caption>
+                        <span className='text-sm text-red-500'>* Max 4 images, 1MB each</span>
                         {previewThumbnails.length > 0 && (
                             <div className="mt-4">
                                 <p className="text-sm font-medium mb-2">Selected Images ({previewThumbnails.length}):</p>
