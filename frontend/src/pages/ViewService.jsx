@@ -9,7 +9,7 @@ import { IoLocationOutline } from 'react-icons/io5'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { PhoneOutgoing } from 'lucide-react';
-import { MessageCircleMore } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 
 
@@ -123,7 +123,7 @@ function ViewService() {
                     <Link to={`tel:${selectedService?.phone}`}>Call now</Link>
                 </Button>
                 <Button>
-                    <span><MessageCircleMore/></span>
+                    <span><MessageCircle/></span>
                     <Link to={`/message/${selectedService._id}`}> Chat with us</Link>
                 </Button>
             </div>
