@@ -28,7 +28,7 @@ function Home() {
       window.scrollTo(0,0)
     },[])
   return (
-    <div className='pt-15'>
+    <div className='pt-20'>
         <Category/>
          <div className='max-w-6xl mx-auto grid gap-10 grid-cols-2 md:grid-cols-4 py-10 px-4 md:px-0'>
         {

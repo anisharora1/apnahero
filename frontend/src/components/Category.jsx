@@ -28,7 +28,7 @@ function Category() {
 
   return (
 
-    <div className='mt-4 mb-6'>
+    <div className='mt-20 mb-6'>
       {/* Categories Grid */}
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-wrap -space-y-4">

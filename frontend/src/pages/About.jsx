@@ -14,7 +14,7 @@ function About() {
             <h1 className='text-4xl font-bold text-center pt-10 '>About us</h1>
             <hr className=' w-15 text-center border-2 border-red-500 rounded-full' />
           </div>
-          <h1 className="font-bold text-xl md:text-3xl mt-4">
+          <h1 className="font-bold text-xl md:text-3xl mt-20">
             <q>From Products to Professionals - All in One Place</q>
           </h1>
         </div>
