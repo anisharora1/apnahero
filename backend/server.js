@@ -56,6 +56,10 @@ app.use('/api/messages', message)
 // Serve static files from the React app
 app.use(express.static(path.join(_dirname, "/frontend/dist")))
 
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(_dirname, "/frontend/dist/index.html"))
+})
+
 
 const activeUsers = new Map()
 const userConversations = new Map() // Track which conversations each user is currently in
