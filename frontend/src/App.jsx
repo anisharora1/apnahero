@@ -1,4 +1,5 @@
-import { createBrowserRouter, RouterProvider} from 'react-router-dom'
+import React from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
 import About from './pages/About'
@@ -50,11 +51,11 @@ function App() {
     },
     {
       element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><MessageRoom /></Suspense></ProtectedRoute></AppWithNotifications>,
-      path:'/chat/:id'
+      path: '/chat/:id'
     },
     {
       element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><MessageList /></Suspense></ProtectedRoute></AppWithNotifications>,
-      path:'/chats'
+      path: '/chats'
     },
     {
       element: <AppWithNotifications><ProtectedRoute><CreateService /></ProtectedRoute></AppWithNotifications>,
@@ -68,7 +69,7 @@ function App() {
       element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><UpdateService /></Suspense></ProtectedRoute></AppWithNotifications>,
       path: `/services/update-service/:id`
     }
-    
+
   ])
 
   return <RouterProvider router={router} />
