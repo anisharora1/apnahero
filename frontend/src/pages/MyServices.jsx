@@ -8,6 +8,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 
 function MyServices() {
     const {services} = useSelector(store => store.services)
@@ -53,6 +54,9 @@ const deleteBlog=async(id)=>{
   return (
    <div className='pb-10 pt-20 h-screen'>
             <div className='max-w-6xl mx-auto mt-8 '>
+                <Button onClick={() => navigate(-1)} className="flex items-center text-sm text-gray-100 bg-gray-900">
+                        <FaArrowLeft className="mr-2" size={20} />
+                    </Button>
                 <Card className="w-full p-5 space-y-2">
 
                     <Table>

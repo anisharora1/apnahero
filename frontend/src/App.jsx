@@ -3,17 +3,18 @@ import './App.css'
 import Navbar from './components/Navbar'
 import About from './pages/About'
 import Footer from './components/Footer'
-import Services from './pages/Services'
 import ProtectedRoute from './components/ProtectedRoute'
 import CreateService from './pages/CreateService'
-import MyServices from './pages/MyServices'
-import UpdateService from './pages/UpdateService'
-import Home from './pages/Home'
-import ViewService from './pages/ViewService'
-import MessageRoom from './pages/MessageRoom'
-import MessageList from './pages/MessageList'
 import { NotificationProvider } from './contexts/NotificationContext'
 import NotificationManager from './components/NotificationManager'
+const Services = React.lazy(() => import('./pages/Services'))
+import { Suspense } from 'react'
+const ViewService = React.lazy(() => import('./pages/ViewService'))
+const Home = React.lazy(() => import('./pages/Home'))
+const MyServices = React.lazy(() => import('./pages/MyServices'))
+const UpdateService = React.lazy(() => import('./pages/UpdateService'))
+const MessageRoom = React.lazy(() => import('./pages/MessageRoom'))
+const MessageList = React.lazy(() => import('./pages/MessageList'))
 
 
 // Wrapper component that includes notification system
@@ -28,11 +29,11 @@ const AppWithNotifications = ({ children }) => (
 function App() {
   const router = createBrowserRouter([
     {
-      element: <AppWithNotifications><Navbar /><Home /><Footer /></AppWithNotifications>,
+      element: <AppWithNotifications><Navbar /><Suspense fallback={<div>Loading...</div>}><Home /></Suspense><Footer /></AppWithNotifications>,
       path: '/'
     },
     {
-      element: <AppWithNotifications><Navbar /><Services /></AppWithNotifications>,
+      element: <AppWithNotifications><Navbar /><Suspense fallback={<div>Loading...</div>}><Services /></Suspense><Footer /></AppWithNotifications>,
       path: '/services'
     },
     {
@@ -40,19 +41,19 @@ function App() {
       path: '/about'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><Navbar /><ViewService /></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><Navbar /><Suspense fallback={<div>Loading...</div>}><ViewService /></Suspense></ProtectedRoute></AppWithNotifications>,
       path: '/services/:id'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><MessageRoom /></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><MessageRoom /></Suspense></ProtectedRoute></AppWithNotifications>,
       path: '/message/:id'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><MessageRoom /></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><MessageRoom /></Suspense></ProtectedRoute></AppWithNotifications>,
       path:'/chat/:id'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><MessageList /></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><MessageList /></Suspense></ProtectedRoute></AppWithNotifications>,
       path:'/chats'
     },
     {
@@ -60,11 +61,11 @@ function App() {
       path: '/create-service'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><MyServices /></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><MyServices /></Suspense></ProtectedRoute></AppWithNotifications>,
       path: '/my-services'
     },
     {
-      element: <AppWithNotifications><ProtectedRoute><UpdateService /></ProtectedRoute></AppWithNotifications>,
+      element: <AppWithNotifications><ProtectedRoute><Suspense fallback={<div>Loading...</div>}><UpdateService /></Suspense></ProtectedRoute></AppWithNotifications>,
       path: `/services/update-service/:id`
     }
     
