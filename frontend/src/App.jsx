@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
@@ -16,11 +16,14 @@ const MyServices = React.lazy(() => import('./pages/MyServices'))
 const UpdateService = React.lazy(() => import('./pages/UpdateService'))
 const MessageRoom = React.lazy(() => import('./pages/MessageRoom'))
 const MessageList = React.lazy(() => import('./pages/MessageList'))
+import PageTracker from './components/PageTracker'
+import { initGA } from './utils/analytics'
 
 
 // Wrapper component that includes notification system
 const AppWithNotifications = ({ children }) => (
   <NotificationProvider>
+    <PageTracker />
     {children}
     <NotificationManager />
   </NotificationProvider>
@@ -28,6 +31,11 @@ const AppWithNotifications = ({ children }) => (
 
 
 function App() {
+
+  // Initialize Google Analytics when app starts
+  useEffect(() => {
+    initGA();
+  }, []);
   const router = createBrowserRouter([
     {
       element: <AppWithNotifications><Navbar /><Suspense fallback={<div>Loading...</div>}><Home /></Suspense><Footer /></AppWithNotifications>,
