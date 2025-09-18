@@ -12,6 +12,7 @@ import jwt from 'jsonwebtoken'
 import Conversation from './src/models/conversation.models.js'
 import Message from './src/models/message.model.js'
 import path from 'path'
+import helmet from 'helmet'
 
 dotenv.config()
 const app = express()
@@ -33,6 +34,63 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN,
   credentials: true,
   optionsSuccessStatus: 200
+}))
+
+// Security headers including explicit Content-Security-Policy
+app.use(helmet({
+  crossOriginEmbedderPolicy: false
+}))
+
+app.use(helmet.contentSecurityPolicy({
+  useDefaults: true,
+  directives: {
+    "default-src": ["'self'"],
+    "base-uri": ["'self'"],
+    "form-action": ["'self'"],
+    "manifest-src": ["'self'"],
+    "img-src": [
+      "'self'",
+      'data:',
+      'blob:',
+      'http:',
+      'https:',
+      'https://apnahero.onrender.com',
+      'https://res.cloudinary.com',
+      'https://images.clerk.dev',
+      'https://img.clerk.com',
+      'https://*.clerk.com',
+      'https://*.clerk.accounts.dev'
+    ],
+    "font-src": ["'self'", 'data:'],
+    "style-src": ["'self'", "'unsafe-inline'"],
+    "connect-src": [
+      "'self'",
+      process.env.CORS_ORIGIN || '',
+      process.env.VITE_API_URL || '',
+      'https://img.clerk.com',
+      'https://images.clerk.dev',
+      'https://api.clerk.com',
+      'https://*.clerk.accounts.dev',
+      'https://*.clerk.services',
+      'https://clerk-telemetry.com',
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'wss://*',
+      'ws://*'
+    ].filter(Boolean),
+    "script-src": [
+      "'self'",
+      "'unsafe-inline'",
+      'https://cdn.jsdelivr.net',
+      'https://*.clerk.com',
+      'https://*.clerk.accounts.dev',
+      'https://*.clerk.services',
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com'
+    ],
+    "worker-src": ["'self'", 'blob:'],
+    "object-src": ["'none'"]
+  }
 }))
 
 const _dirname = path.resolve()

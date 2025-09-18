@@ -35,6 +35,11 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
+  // Skip caching for cross-origin requests to avoid CSP and opaque response issues
+  if (new URL(request.url).origin !== self.location.origin) {
+    return; // Allow the browser to handle it normally
+  }
+
   event.respondWith(
     caches.match(request).then((cached) => {
       const networkFetch = fetch(request)

@@ -12,7 +12,10 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
     throw new Error('Add your Clerk Publishable Key to the .env file')
   }
 
-createRoot(document.getElementById('root')).render(
+const rootEl = document.getElementById('root')
+const splashEl = document.getElementById('splash')
+
+createRoot(rootEl).render(
   <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
         <Provider store={Store}>
@@ -21,6 +24,13 @@ createRoot(document.getElementById('root')).render(
     </ClerkProvider>
   </StrictMode>,
 )
+
+// Remove splash once React has mounted
+queueMicrotask(() => {
+  if (splashEl && splashEl.parentNode) {
+    splashEl.parentNode.removeChild(splashEl)
+  }
+})
 
 // Register service worker in production
 if ('serviceWorker' in navigator) {

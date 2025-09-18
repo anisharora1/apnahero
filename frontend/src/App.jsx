@@ -18,6 +18,7 @@ const MessageRoom = React.lazy(() => import('./pages/MessageRoom'))
 const MessageList = React.lazy(() => import('./pages/MessageList'))
 import PageTracker from './components/PageTracker'
 import { initGA } from './utils/analytics'
+// Removed AuthSync as Clerk components are reactive
 
 
 // Wrapper component that includes notification system

@@ -13,7 +13,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 function UpdateService() {
     const [loading, setLoading] = useState(false)
     const editor = useRef(null)
-    const [thumbnail, setThumbnail] = useState([])
+    const [thumbnailFiles, setThumbnailFiles] = useState([])
     const [previewThumbnails, setPreviewThumbnails] = useState([])
 
     const { services, selectedService } = useSelector(store => store.services)
@@ -54,6 +54,9 @@ function UpdateService() {
                 location: selectedService.location || '',
                 thumbnails: selectedService.thumbnails || []
             })
+            // Reset any local file selections when service changes
+            setThumbnailFiles([])
+            setPreviewThumbnails([])
         }
     }, [selectedService])
 
@@ -76,7 +79,8 @@ function UpdateService() {
         const files = e.target.files;
         if (files && files.length > 0) {
             const fileArray = Array.from(files);
-            setContent((prev) => ({ ...prev, thumbnails: fileArray }));
+            // Keep files separate from existing thumbnail URLs
+            setThumbnailFiles(fileArray);
 
             const previews = [];
             let loadedCount = 0;
@@ -106,6 +110,7 @@ function UpdateService() {
                 }
             });
         } else {
+            setThumbnailFiles([]);
             setPreviewThumbnails([]);
         }
     };
@@ -119,7 +124,10 @@ function UpdateService() {
         formData.append('phoneNumber', content.phoneNumber)
         formData.append('category', content.category)
         formData.append('location', content.location)
-        content.thumbnails.forEach(file => formData.append('thumbnails', file))
+        // Only send new thumbnails if user selected any. Otherwise keep existing on server
+        if (thumbnailFiles.length > 0) {
+            thumbnailFiles.forEach(file => formData.append('thumbnails', file))
+        }
 
         try {
             setLoading(true)
@@ -133,6 +141,20 @@ function UpdateService() {
                 )
                 dispatch(setServices(updatedServices))
                 dispatch(setSelectedService(updatedService))
+                // Reflect updates locally without refresh
+                setContent((prev) => ({
+                    ...prev,
+                    title: updatedService.title || '',
+                    description: updatedService.description || '',
+                    price: updatedService.price || '',
+                    phoneNumber: updatedService.phoneNumber || '',
+                    category: updatedService.category || '',
+                    location: updatedService.location || '',
+                    thumbnails: updatedService.thumbnails || []
+                }))
+                // Clear local selections after successful save
+                setThumbnailFiles([])
+                setPreviewThumbnails([])
                 setLoading(false)
                 alert("Service updated successfully")
             }

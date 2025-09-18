@@ -110,7 +110,7 @@ function ViewService() {
                 </div>
                 <div className='border-x-2 border-b-2 rounded min-h-50'>
                     <h2 className="text-2xl text-center font-bold text-gray-400 mb-4 tracking-wide">Service Details</h2>
-                    <p className='pl-4 font-semibold tracking-wide' dangerouslySetInnerHTML={{ __html: selectedService?.description }} />
+                    <p className='pl-4 pb-8 font-semibold tracking-wide' dangerouslySetInnerHTML={{ __html: selectedService?.description }} />
 
                 </div>
 

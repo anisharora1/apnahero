@@ -10,10 +10,20 @@
   <meta name="theme-color" content="#0ea5e9" />
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Apna Hero</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; manifest-src 'self'; img-src 'self' data: blob: http: https: https://apnahero.onrender.com https://res.cloudinary.com https://images.clerk.dev https://img.clerk.com https://*.clerk.com https://*.clerk.accounts.dev; font-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:8000 https://apnahero.onrender.com https://api.clerk.com https://img.clerk.com https://images.clerk.dev https://*.clerk.accounts.dev https://*.clerk.services https://clerk-telemetry.com https://www.googletagmanager.com https://www.google-analytics.com ws: wss:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://*.clerk.com https://*.clerk.accounts.dev https://*.clerk.services; worker-src 'self' blob:; object-src 'none'">
+  <title>ApnaHero</title>
 </head>
 
 <body>
+  <div id="splash" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#ffffff;z-index:99999">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <div style="width:48px;height:48px;border:4px solid #e5e7eb;border-top-color:#0ea5e9;border-radius:9999px;animation:spin 1s linear infinite"></div>
+      <div style="font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;font-weight:600;color:#111827">ApnaHero</div>
+    </div>
+    <style>
+      @keyframes spin{to{transform:rotate(360deg)}}
+    </style>
+  </div>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

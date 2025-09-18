@@ -61,7 +61,8 @@ function ServiceCard({ service }) {
                             alt={`Slide ${index + 1}`}
                             className="w-full h-full object-cover rounded-2xl"
                             onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/800x400?text=Image+Not+Found';
+                                e.target.onerror = null;
+                                e.target.src = '/favicon-32x32.png';
                             }}
                         />
                     </div>
