@@ -1,5 +1,5 @@
 // src/utils/analytics.js
-export const GA_TRACKING_ID = process.env.REACT_APP_GA_TRACKING_ID;
+export const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID;
 
 // Initialize Google Analytics
 export const initGA = () => {
