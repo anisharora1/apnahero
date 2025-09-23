@@ -24,14 +24,22 @@ const server = createServer(app)
 // Configure Socket.io
 const io = new Server(server, {
   cors: {
-    origin: process.env.CORS_ORIGIN,
+    origin: [
+      process.env.CORS_ORIGIN,
+      'https://www.apnahero.in',
+      'https://apnahero.in'
+    ].filter(Boolean),
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN,
+  origin: [
+    process.env.CORS_ORIGIN,
+    'https://www.apnahero.in',
+    'https://apnahero.in'
+  ].filter(Boolean),
   credentials: true,
   optionsSuccessStatus: 200
 }))
@@ -63,10 +71,18 @@ app.use(helmet.contentSecurityPolicy({
     ],
     "font-src": ["'self'", 'data:'],
     "style-src": ["'self'", "'unsafe-inline'"],
+    "frame-src": [
+      "'self'",
+      'https://clerk.apnahero.in',
+      'https://*.clerk.com',
+      'https://*.clerk.accounts.dev',
+      'https://*.clerk.services'
+    ],
     "connect-src": [
       "'self'",
       process.env.CORS_ORIGIN || '',
       process.env.VITE_API_URL || '',
+      'https://clerk.apnahero.in',
       'https://img.clerk.com',
       'https://images.clerk.dev',
       'https://api.clerk.com',
