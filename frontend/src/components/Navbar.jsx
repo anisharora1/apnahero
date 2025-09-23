@@ -9,6 +9,7 @@ import { FaHome } from "react-icons/fa";
 import { IoIosChatboxes } from "react-icons/io";
 import { FaRegWindowRestore } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
+import { MdInstallMobile } from "react-icons/md";
 import axios from 'axios'
 
 function Navbar() {
@@ -112,6 +113,9 @@ function Navbar() {
                                 </div>
                             </Link>
                         </SignedIn>
+                        {canInstall && (
+                            <Button variant="secondary" onClick={handleInstallClick}><MdInstallMobile/></Button>
+                        )}
                     </div>
 
                     {/* nav section */}
