@@ -82,6 +82,7 @@ app.use(helmet.contentSecurityPolicy({
       "'self'",
       "'unsafe-inline'",
       'https://cdn.jsdelivr.net',
+      'https://clerk.apnahero.in',
       'https://*.clerk.com',
       'https://*.clerk.accounts.dev',
       'https://*.clerk.services',
