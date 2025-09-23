@@ -78,7 +78,9 @@ app.use(helmet.contentSecurityPolicy({
       'https://*.clerk.accounts.dev',
       'https://*.clerk.services',
       'https://accounts.google.com',
-      'https://apis.google.com'
+      'https://apis.google.com',
+      'https://*.google.com',
+      'https://*.googleusercontent.com'
     ],
     "connect-src": [
       "'self'",
@@ -87,6 +89,8 @@ app.use(helmet.contentSecurityPolicy({
       'https://clerk.apnahero.in',
       'https://accounts.google.com',
       'https://apis.google.com',
+      'https://*.google.com',
+      'https://*.googleusercontent.com',
       'https://img.clerk.com',
       'https://images.clerk.dev',
       'https://api.clerk.com',
@@ -105,6 +109,8 @@ app.use(helmet.contentSecurityPolicy({
       'https://clerk.apnahero.in',
       'https://accounts.google.com',
       'https://apis.google.com',
+      'https://*.google.com',
+      'https://*.googleusercontent.com',
       'https://*.clerk.com',
       'https://*.clerk.accounts.dev',
       'https://*.clerk.services',
