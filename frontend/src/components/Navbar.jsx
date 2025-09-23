@@ -114,7 +114,7 @@ function Navbar() {
                             </Link>
                         </SignedIn>
                         {canInstall && (
-                            <Button variant="secondary" onClick={handleInstallClick}><MdInstallMobile/></Button>
+                            <Button className="md:hidden" variant="secondary" onClick={handleInstallClick}><MdInstallMobile/></Button>
                         )}
                     </div>
 

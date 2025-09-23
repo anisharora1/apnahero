@@ -7,6 +7,7 @@ import { setServices, setSelectedService } from '@/redux/serviceSlice'
 import axios from 'axios'
 import JoditEditor from 'jodit-react'
 import React, { useRef, useState, useEffect } from 'react'
+import { useAuth } from '@clerk/clerk-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
@@ -21,6 +22,7 @@ function UpdateService() {
     const serviceId = params.id
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const { getToken } = useAuth()
 
     const [content, setContent] = useState({
         title: '',
@@ -131,7 +133,17 @@ function UpdateService() {
 
         try {
             setLoading(true)
-            const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/services/update-service/${serviceId}`, formData, { withCredentials: true })
+            const token = await getToken()
+            const res = await axios.put(
+                `${import.meta.env.VITE_API_URL}/api/services/update-service/${serviceId}`,
+                formData,
+                {
+                    withCredentials: true,
+                    headers: {
+                        Authorization: token ? `Bearer ${token}` : undefined
+                    }
+                }
+            )
 
             if (res.data.success) {
                 const updatedService = res.data.service
@@ -171,9 +183,16 @@ function UpdateService() {
         const newPublishStatus = !selectedService.isPublished
 
         try {
-            const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/services/toggle-publish/${serviceId}`,
+            const token = await getToken()
+            const res = await axios.patch(
+                `${import.meta.env.VITE_API_URL}/api/services/toggle-publish/${serviceId}`,
                 { isPublished: newPublishStatus },
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    headers: {
+                        Authorization: token ? `Bearer ${token}` : undefined
+                    }
+                }
             )
 
             if (res.data.success) {
@@ -195,7 +214,16 @@ function UpdateService() {
 
     const deleteService = async () => {
         try {
-            const res = await axios.delete(`${import.meta.env.VITE_API_URL}/api/services/delete-service/${serviceId}`, { withCredentials: true })
+            const token = await getToken()
+            const res = await axios.delete(
+                `${import.meta.env.VITE_API_URL}/api/services/delete-service/${serviceId}`,
+                {
+                    withCredentials: true,
+                    headers: {
+                        Authorization: token ? `Bearer ${token}` : undefined
+                    }
+                }
+            )
             if (res.data.success) {
                 // Remove the deleted service from the Redux store
                 const updatedServices = services.filter(item => item._id !== serviceId)

@@ -67,7 +67,10 @@ app.use(helmet.contentSecurityPolicy({
       'https://images.clerk.dev',
       'https://img.clerk.com',
       'https://*.clerk.com',
-      'https://*.clerk.accounts.dev'
+      'https://*.clerk.accounts.dev',
+      'https://challenges.cloudflare.com',
+      'https://*.cloudflare.com',
+      'https://*.turnstile.workers.dev'
     ],
     "font-src": ["'self'", 'data:'],
     "style-src": ["'self'", "'unsafe-inline'"],
