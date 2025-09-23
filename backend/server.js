@@ -76,13 +76,17 @@ app.use(helmet.contentSecurityPolicy({
       'https://clerk.apnahero.in',
       'https://*.clerk.com',
       'https://*.clerk.accounts.dev',
-      'https://*.clerk.services'
+      'https://*.clerk.services',
+      'https://accounts.google.com',
+      'https://apis.google.com'
     ],
     "connect-src": [
       "'self'",
       process.env.CORS_ORIGIN || '',
       process.env.VITE_API_URL || '',
       'https://clerk.apnahero.in',
+      'https://accounts.google.com',
+      'https://apis.google.com',
       'https://img.clerk.com',
       'https://images.clerk.dev',
       'https://api.clerk.com',
@@ -99,6 +103,8 @@ app.use(helmet.contentSecurityPolicy({
       "'unsafe-inline'",
       'https://cdn.jsdelivr.net',
       'https://clerk.apnahero.in',
+      'https://accounts.google.com',
+      'https://apis.google.com',
       'https://*.clerk.com',
       'https://*.clerk.accounts.dev',
       'https://*.clerk.services',
