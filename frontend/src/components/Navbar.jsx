@@ -132,7 +132,7 @@ function Navbar() {
                         <SignedOut>
                             <Button onClick={() => openSignIn({
                                 fallbackRedirectUrl: window.location.href,
-                                afterSignInUrl: window.location.href
+                                forceRedirectUrl: window.location.href
                             })}>Login</Button>
                         </SignedOut>
                         <SignedIn>
@@ -178,7 +178,7 @@ function Navbar() {
                             })}>Login</Button>
                         </SignedOut>
                         <SignedIn>
-                            <UserButton afterSignInUrl={window.location.href} afterSignOutUrl="/" />
+                            <UserButton fallbackRedirectUrl={window.location.href} signOutFallbackRedirectUrl="/" />
                         </SignedIn>
                     </button>
                 </div>

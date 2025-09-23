@@ -80,7 +80,10 @@ app.use(helmet.contentSecurityPolicy({
       'https://accounts.google.com',
       'https://apis.google.com',
       'https://*.google.com',
-      'https://*.googleusercontent.com'
+      'https://*.googleusercontent.com',
+      'https://challenges.cloudflare.com',
+      'https://*.cloudflare.com',
+      'https://*.turnstile.workers.dev'
     ],
     "connect-src": [
       "'self'",
@@ -99,6 +102,9 @@ app.use(helmet.contentSecurityPolicy({
       'https://clerk-telemetry.com',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
+      'https://challenges.cloudflare.com',
+      'https://*.cloudflare.com',
+      'https://*.turnstile.workers.dev',
       'wss://*',
       'ws://*'
     ].filter(Boolean),
@@ -114,6 +120,9 @@ app.use(helmet.contentSecurityPolicy({
       'https://*.clerk.com',
       'https://*.clerk.accounts.dev',
       'https://*.clerk.services',
+      'https://challenges.cloudflare.com',
+      'https://*.cloudflare.com',
+      'https://*.turnstile.workers.dev',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com'
     ],

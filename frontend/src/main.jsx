@@ -17,7 +17,7 @@ const splashEl = document.getElementById('splash')
 
 createRoot(rootEl).render(
   <StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/">
         <Provider store={Store}>
             <App />
         </Provider>

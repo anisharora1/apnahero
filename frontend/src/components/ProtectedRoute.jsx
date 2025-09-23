@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children }) {
     <>
       <SignedIn>{children}</SignedIn>
       <SignedOut>
-        <RedirectToSignIn redirectUrl={window.location.href} />
+        <RedirectToSignIn fallbackRedirectUrl={window.location.href} forceRedirectUrl={window.location.href} />
       </SignedOut>
     </>
   );
