@@ -54,7 +54,7 @@ const postService = async (req, res) => {
 
 const updateService = async (req, res) => {
     try {
-        const { title, description, price, location, category } = req.body;
+        const { title, description, price, location, category, phoneNumber } = req.body;
         const serviceId = req.params.id;
         if (!serviceId) {
             return res.status(400).json({ message: "Service ID is required" });
@@ -69,7 +69,7 @@ const updateService = async (req, res) => {
         }
 
         let thumbnailUrls = [];
-        // console.log('Files received:', req.files);
+        // Only replace thumbnails if new files are uploaded; otherwise preserve existing
         if (req.files && req.files.length > 0) {
             for (let file of req.files) {
                 try {
@@ -83,18 +83,21 @@ const updateService = async (req, res) => {
                     console.error("Error uploading image:", error);
                 }
             }
-        } else {
-            console.log('no files received')
         }
 
-        service = await Service.findByIdAndUpdate(serviceId, {
+        const updatePayload = {
             title,
             description,
-            price: Number(price),
+            price: price !== undefined ? Number(price) : service.price,
             location,
             category,
-            thumbnails: thumbnailUrls
-        }, { new: true });
+            phoneNumber: phoneNumber !== undefined ? phoneNumber : service.phoneNumber,
+        };
+
+        // If new thumbnails uploaded, set them; else keep existing
+        updatePayload.thumbnails = (req.files && req.files.length > 0) ? thumbnailUrls : service.thumbnails;
+
+        service = await Service.findByIdAndUpdate(serviceId, updatePayload, { new: true });
 
         if (!service) {
             return res.status(500).json({success:false, message: "Failed to update service" });
@@ -151,8 +154,8 @@ const togglePublishAndUnpublish = async (req, res) => {
             return res.status(403).json({ message: "You are not authorized to delete this service" });
         }
         service.isPublished = !service.isPublished;
-         await service.save();
-        return res.status(200).json({success:true, message: "Service publish status toggled successfully"});
+        await service.save();
+        return res.status(200).json({success:true, message: "Service publish status toggled successfully", service});
 
     } catch (error) {
         console.error("Error toggling service publish status:", error);
