@@ -90,13 +90,16 @@ function ServiceCard({ service }) {
                     {currentIndex + 1} / {imageUrls.length}
                 </div>
             </div>
-            <h2 className="text-xl font-semibold  mt-1 capitalize">{service.title}</h2>
+            <h2 className="text-xl font-semibold mt-1 capitalize truncate" title={service.title}>{service.title}</h2>
             <div className='flex justify-between items-center'>
                 <h2 className='text-lg font-bold'>₹{service.price}</h2>
                 <Badge variant='secondary' className='bg-amber-300'>{service.category}</Badge>
             </div>
             <div className='flex gap-4'>
-                <h3 className='flex items-center gap-0.5 capitalize'><span><IoLocationOutline /></span>{service.location}</h3>
+                <h3 className='flex items-center gap-0.5 capitalize truncate' title={service.location}>
+                    <span><IoLocationOutline /></span>
+                    <span className="truncate max-w-[12rem] md:max-w-[16rem]">{service.location}</span>
+                </h3>
                 <p className="text-sm  mt-2">
                     {timeElapsed}
                 </p>

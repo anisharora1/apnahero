@@ -167,12 +167,15 @@ function ViewService() {
                 <div className='mt-5 min-h-40 text-center p-4  border-gray-50 border-2 rounded-2xl mb-4'>
                     {/* Service Header */}
                     <div className="flex text-left justify-between">
-                        <h1 className="text-xl leading-6 md:font-bold font-semibold tracking-tight mb-4 capitalize">{selectedService?.title}</h1>
+                        <h1 className="text-xl leading-6 md:font-bold font-semibold tracking-tight mb-4 capitalize truncate" title={selectedService?.title}>{selectedService?.title}</h1>
                         <div className="text-sm text-muted-foreground">{timeElapsed ? `Published ${timeElapsed}` : ''}</div>
                     </div>
                     <div className='flex justify-between items-center'>
                         <h2 className='text-2xl font-bold'>₹{selectedService?.price}</h2>
-                        <p className='text-lg text-muted-foreground flex items-center gap-1 capitalize'><span><IoLocationOutline /></span>{selectedService?.location || "Unknown"}</p>
+                        <p className='text-lg text-muted-foreground flex items-center gap-1 capitalize truncate' title={selectedService?.location || "Unknown"}>
+                            <span><IoLocationOutline /></span>
+                            <span className="truncate max-w-[14rem] md:max-w-[20rem]">{selectedService?.location || "Unknown"}</span>
+                        </p>
                         <Badge className='bg-black-300 text-black text-xl'>{selectedService?.category}</Badge>
 
                     </div>

@@ -168,6 +168,7 @@ function UpdateService() {
                 setThumbnailFiles([])
                 setPreviewThumbnails([])
                 setLoading(false)
+                navigate('/my-services')
                 alert("Service updated successfully")
             }
         } catch (error) {
