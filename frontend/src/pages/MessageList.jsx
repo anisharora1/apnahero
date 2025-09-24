@@ -21,6 +21,17 @@ function MessageList() {
         fetchConversations();
     }, []);
 
+    // Listen for global events to refresh list without hard reload
+    useEffect(() => {
+        const refresh = () => fetchConversations();
+        window.addEventListener('newMessageNotification', refresh);
+        window.addEventListener('messagesMarkedRead', refresh);
+        return () => {
+            window.removeEventListener('newMessageNotification', refresh);
+            window.removeEventListener('messagesMarkedRead', refresh);
+        }
+    }, []);
+
     // Initialize socket for notifications
     const initSocket = useCallback(async () => {
         if (socketRef.current?.connected) {

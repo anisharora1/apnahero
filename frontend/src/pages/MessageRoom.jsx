@@ -233,6 +233,11 @@ function MessageRoom() {
                     {},
                     { withCredentials: true }
                 );
+
+                // Notify app to refresh unread counts globally
+                window.dispatchEvent(new CustomEvent('messagesMarkedRead', {
+                    detail: { conversationId }
+                }));
             }
         } catch (error) {
             console.error("Error fetching messages:", error);

@@ -30,6 +30,19 @@ function Navbar() {
         }
     }, [isLoaded, isSignedIn, user]);
 
+    // Live refresh unread badge when new messages or reads happen
+    useEffect(() => {
+        const refresh = () => {
+            if (isLoaded && isSignedIn && user) fetchConversations();
+        }
+        window.addEventListener('newMessageNotification', refresh);
+        window.addEventListener('messagesMarkedRead', refresh);
+        return () => {
+            window.removeEventListener('newMessageNotification', refresh);
+            window.removeEventListener('messagesMarkedRead', refresh);
+        }
+    }, [isLoaded, isSignedIn, user]);
+
     useEffect(() => {
         const handler = (e) => {
             e.preventDefault()
