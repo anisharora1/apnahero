@@ -39,16 +39,45 @@ function UpdateService() {
     // Load selected service when component mounts or serviceId changes
     useEffect(() => {
         if (serviceId) {
-            // First try to find in myServices, then in all services
-            let service = myServices.find(item => item._id === serviceId)
-            if (!service && services.length > 0) {
-                service = services.find(item => item._id === serviceId)
+            // Always fetch the latest service data from the backend to ensure we have the current state
+            const fetchLatestService = async () => {
+                try {
+                    const token = await getToken()
+                    const res = await axios.get(
+                        `${import.meta.env.VITE_API_URL}/api/services/my-services`,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                Authorization: token ? `Bearer ${token}` : undefined,
+                            }
+                        }
+                    )
+                    
+                    if (res.data.success) {
+                        const latestService = res.data.services.find(item => item._id === serviceId)
+                        if (latestService) {
+                            console.log('🔍 FRONTEND DEBUG: Fetched latest service from backend:', latestService)
+                            dispatch(setSelectedService(latestService))
+                            // Also update the myServices array with the latest data
+                            dispatch(setMyServices(res.data.services))
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching latest service:', error)
+                    // Fallback to cached data if fetch fails
+                    let service = myServices.find(item => item._id === serviceId)
+                    if (!service && services.length > 0) {
+                        service = services.find(item => item._id === serviceId)
+                    }
+                    if (service) {
+                        dispatch(setSelectedService(service))
+                    }
+                }
             }
-            if (service) {
-                dispatch(setSelectedService(service))
-            }
+            
+            fetchLatestService()
         }
-    }, [serviceId, myServices, services, dispatch])
+    }, [serviceId, dispatch, getToken])
 
     // Initialize form data when selectedService is available
     useEffect(() => {
@@ -192,6 +221,7 @@ function UpdateService() {
                 thumbnailFiles.forEach(file => formData.append('thumbnails', file))
             }
             
+            
             setLoading(true)
             const token = await getToken()
             const res = await axios.put(
@@ -200,7 +230,8 @@ function UpdateService() {
                 {
                     withCredentials: true,
                     headers: {
-                        Authorization: token ? `Bearer ${token}` : undefined
+                        Authorization: token ? `Bearer ${token}` : undefined,
+                        'Content-Type': 'multipart/form-data'
                     }
                 }
             )
@@ -208,12 +239,25 @@ function UpdateService() {
             if (res.data.success) {
                 const updatedService = res.data.service
                 
-                // Update all services array (for home page)
+                // Update all services array (for home page) - only if service is published
                 if (services && Array.isArray(services)) {
-                    const updatedAllServices = services.map(item =>
-                        item._id === serviceId ? updatedService : item
-                    )
-                    dispatch(setServices(updatedAllServices))
+                    if (updatedService.isPublished) {
+                        // If service is published, add or update it in all services
+                        const existingIndex = services.findIndex(item => item._id === serviceId)
+                        if (existingIndex >= 0) {
+                            const updatedAllServices = services.map(item =>
+                                item._id === serviceId ? updatedService : item
+                            )
+                            dispatch(setServices(updatedAllServices))
+                        } else {
+                            // Add new published service to all services
+                            dispatch(setServices([...services, updatedService]))
+                        }
+                    } else {
+                        // If service is unpublished, remove it from all services
+                        const updatedAllServices = services.filter(item => item._id !== serviceId)
+                        dispatch(setServices(updatedAllServices))
+                    }
                 }
                 
                 // Update my services array (for MyServices page)

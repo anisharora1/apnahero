@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { setMyServices, markMyServicesAsStale } from '@/redux/serviceSlice'
+import { setMyServices, setServices, markMyServicesAsStale } from '@/redux/serviceSlice'
 import axios from 'axios'
 import { Edit, Trash2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -14,7 +14,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { useMyServicesRefresh } from '@/hooks/useMyServicesRefresh'
 
 function MyServices() {
-    const {myServices} = useSelector(store => store.services)
+    const {myServices, services} = useSelector(store => store.services)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { getToken } = useAuth()
@@ -79,11 +79,32 @@ const togglePublishUnpublish = async (serviceId, currentStatus) => {
 
         if (res.data.success) {
             const updatedService = res.data.service
+            
             // Update myServices array with the updated service
-            const updatedServices = myServices.map(item =>
+            const updatedMyServices = myServices.map(item =>
                 item._id === serviceId ? updatedService : item
             )
-            dispatch(setMyServices(updatedServices))
+            dispatch(setMyServices(updatedMyServices))
+            
+            // Update all services array based on publish status
+            if (updatedService.isPublished) {
+                // If service is published, add or update it in all services
+                const existingIndex = services.findIndex(item => item._id === serviceId)
+                if (existingIndex >= 0) {
+                    const updatedAllServices = services.map(item =>
+                        item._id === serviceId ? updatedService : item
+                    )
+                    dispatch(setServices(updatedAllServices))
+                } else {
+                    // Add new published service to all services
+                    dispatch(setServices([...services, updatedService]))
+                }
+            } else {
+                // If service is unpublished, remove it from all services
+                const updatedAllServices = services.filter(item => item._id !== serviceId)
+                dispatch(setServices(updatedAllServices))
+            }
+            
             markAsStale(); // Mark data as stale to trigger refresh
             alert(`Service ${newPublishStatus ? "published" : "unpublished"} successfully`)
         } else {

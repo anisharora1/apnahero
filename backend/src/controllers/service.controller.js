@@ -105,6 +105,7 @@ const updateService = async (req, res) => {
             location,
             category,
             phoneNumber: phoneNumber !== undefined ? phoneNumber : service.phoneNumber,
+            isPublished: service.isPublished, // Preserve the current publish status
         };
 
         // If new thumbnails uploaded, set them; else keep existing

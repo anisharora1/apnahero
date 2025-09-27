@@ -28,11 +28,9 @@ router.route('/my-services').get(
 router.route('/toggle-publish/:id').patch(
     validateUser,
     togglePublishAndUnpublish
-
 )
 router.route('/all-published-services').get(
     allPublishedServices
-
 )
 
 export default router
