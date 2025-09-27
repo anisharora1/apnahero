@@ -1,32 +1,20 @@
 import Category from '@/components/Category'
 import ServiceCard from '@/components/ServiceCard'
-import { setServices } from '@/redux/serviceSlice'
-import axios from 'axios'
+import { useDataRefresh } from '@/hooks/useDataRefresh'
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { clearSearchResults } from '@/redux/serviceSlice'
 
 function Home() {
-  const dispatch = useDispatch()
   const { services } = useSelector(store => store.services)
-  useEffect(() => {
-    const getAllServices = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/services/all-published-services`, { withCredentials: true })
-        if (res.data.success) {
-          dispatch(setServices(res.data.services))
-
-        }
-
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getAllServices()
-
-  }, [])
+  const { fetchServices } = useDataRefresh()
+  const dispatch = useDispatch()
+  
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+    // Clear search results when returning to home page
+    dispatch(clearSearchResults())
+  }, [dispatch])
   return (
     <div className='pt-8'>
       <Category />

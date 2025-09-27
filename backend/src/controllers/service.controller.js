@@ -69,6 +69,8 @@ const updateService = async (req, res) => {
         }
 
         let thumbnailUrls = [];
+        let uploadErrors = [];
+        
         // Only replace thumbnails if new files are uploaded; otherwise preserve existing
         if (req.files && req.files.length > 0) {
             for (let file of req.files) {
@@ -78,10 +80,21 @@ const updateService = async (req, res) => {
                         thumbnailUrls.push(uploadResult.secure_url);
                     } else {
                         console.error("Failed to upload image:", uploadResult);
+                        uploadErrors.push(`Failed to upload ${file.originalname}`);
                     }
                 } catch (error) {
                     console.error("Error uploading image:", error);
+                    uploadErrors.push(`Error uploading ${file.originalname}: ${error.message}`);
                 }
+            }
+            
+            // If all uploads failed, return error
+            if (thumbnailUrls.length === 0 && uploadErrors.length > 0) {
+                return res.status(400).json({
+                    success: false, 
+                    message: "Failed to upload images", 
+                    errors: uploadErrors 
+                });
             }
         }
 
@@ -102,7 +115,6 @@ const updateService = async (req, res) => {
         if (!service) {
             return res.status(500).json({success:false, message: "Failed to update service" });
         }
-        await service.save();
 
         return res.status(200).json({success:true, message: "Service updated successfully", service});
 

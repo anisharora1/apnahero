@@ -1,14 +1,13 @@
 import ServiceCard from '@/components/ServiceCard'
-import { setServices } from '@/redux/serviceSlice'
-import axios from 'axios'
-import React, { useEffect, useMemo, useState } from 'react'
+import { setSearchResults } from '@/redux/serviceSlice'
+import React, { useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { useSearchRefresh } from '@/hooks/useSearchRefresh'
 
 function Services() {
   const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
-  const {services}= useSelector(store => store.services)
+  const {searchResults} = useSelector(store => store.services)
   const location = useLocation()
 
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search])
@@ -16,30 +15,13 @@ function Services() {
   const category = searchParams.get('category') || ''
   const loc = searchParams.get('location') || ''
 
-  const getServices= async()=>{
- 
-    setLoading(true)
-    try {
-      const params = {}
-      if (q) params.q = q
-      if (category) params.category = category
-      if (loc) params.location = loc
-      const res=await axios.get(`${import.meta.env.VITE_API_URL}/api/services/all-published-services`,{
-        withCredentials:true,
-        params
-      })
-      if(res.data.success){
-        dispatch(setServices(res.data.services))
-        setLoading(false)
-      }
-    } catch (error) {
-      console.log(error)
-      setLoading(false)
-    }
-  }
-  useEffect(() => {
-    getServices()
-  },[q, category, loc])
+  const searchParamsObj = useMemo(() => ({
+    q,
+    category,
+    location: loc
+  }), [q, category, loc])
+
+  const { fetchSearchResults } = useSearchRefresh(searchParamsObj)
   return (
      <div className='pt-16'>
       <div className='max-w-6xl mx-auto text-center flex flex-col space-y-4 items-center'>
@@ -49,7 +31,7 @@ function Services() {
       </div>
       <div className='max-w-6xl mx-auto grid gap-10 grid-cols-2 md:grid-cols-4 py-10 px-4 md:px-0'>
         {
-          services?.map((service, index) => {
+          searchResults?.map((service, index) => {
             return <ServiceCard service={service} key={index} />
           })
         }

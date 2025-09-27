@@ -39,14 +39,14 @@ function Footer() {
             <h3 className='text-xl font-semibold'>Follow Us</h3>
             <div className='flex space-x-4 mt-2'>
                 <FaFacebook/>
-                <FaInstagram/>
-                <FaTwitterSquare/>
+                <Link to={'https://www.instagram.com/apnahero.in?igsh=Nmx0ODZxczhxZ2E0'} target='_blank'><FaInstagram/></Link>
+                <Link to={'https://x.com/AnishArora45951?t=nUCChIs70FL_gfcroFCEcg&s=09'} target='_blank'><FaTwitterSquare/></Link>
             </div>
         </div>
       </div>
       {/* bottom section */}
       <div className='mt-8 border-t border-gray-700 pt-6 text-center text-sm'>
-        <p>&copy; {new Date().getFullYear()} <span className='text-red-500'>ApnaHero.in</span>. All rights reserved</p>
+        <p>&copy; {new Date().getFullYear()} <span className='text-red-500'>apnahero.in</span>. All rights reserved</p>
       </div>
     </footer>
   )

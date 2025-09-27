@@ -4,7 +4,8 @@ import './index.css'
 import App from './App.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { Provider } from 'react-redux'
-import { Store } from './redux/Store'
+import { PersistGate } from 'redux-persist/integration/react'
+import { Store, persistor } from './redux/Store'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -19,7 +20,9 @@ createRoot(rootEl).render(
   <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/">
         <Provider store={Store}>
-            <App />
+            <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+                <App />
+            </PersistGate>
         </Provider>
     </ClerkProvider>
   </StrictMode>,

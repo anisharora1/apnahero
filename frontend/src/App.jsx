@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import CreateService from './pages/CreateService'
 import { NotificationProvider } from './contexts/NotificationContext'
 import NotificationManager from './components/NotificationManager'
+import DataRefreshManager from './components/DataRefreshManager'
 const Services = React.lazy(() => import('./pages/Services'))
 import { Suspense } from 'react'
 const ViewService = React.lazy(() => import('./pages/ViewService'))
@@ -25,6 +26,7 @@ import { initGA } from './utils/analytics'
 const AppWithNotifications = ({ children }) => (
   <NotificationProvider>
     <PageTracker />
+    <DataRefreshManager />
     {children}
     <NotificationManager />
   </NotificationProvider>

@@ -3,13 +3,14 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { setServices, setSelectedService } from '@/redux/serviceSlice'
+import { setServices, setMyServices, setSelectedService } from '@/redux/serviceSlice'
 import axios from 'axios'
 import JoditEditor from 'jodit-react'
 import React, { useRef, useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDataRefresh } from '@/hooks/useDataRefresh'
 
 function UpdateService() {
     const [loading, setLoading] = useState(false)
@@ -17,12 +18,13 @@ function UpdateService() {
     const [thumbnailFiles, setThumbnailFiles] = useState([])
     const [previewThumbnails, setPreviewThumbnails] = useState([])
 
-    const { services, selectedService } = useSelector(store => store.services)
+    const { services, myServices, selectedService } = useSelector(store => store.services)
     const params = useParams()
     const serviceId = params.id
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { getToken } = useAuth()
+    const { markAsStale } = useDataRefresh()
 
     const [content, setContent] = useState({
         title: '',
@@ -36,13 +38,17 @@ function UpdateService() {
 
     // Load selected service when component mounts or serviceId changes
     useEffect(() => {
-        if (serviceId && services.length > 0) {
-            const service = services.find(item => item._id === serviceId)
+        if (serviceId) {
+            // First try to find in myServices, then in all services
+            let service = myServices.find(item => item._id === serviceId)
+            if (!service && services.length > 0) {
+                service = services.find(item => item._id === serviceId)
+            }
             if (service) {
                 dispatch(setSelectedService(service))
             }
         }
-    }, [serviceId, services, dispatch])
+    }, [serviceId, myServices, services, dispatch])
 
     // Initialize form data when selectedService is available
     useEffect(() => {
@@ -51,7 +57,7 @@ function UpdateService() {
                 title: selectedService.title || '',
                 description: selectedService.description || '',
                 price: selectedService.price || '',
-                phoneNumber: selectedService.phoneNumber || '',
+                phoneNumber: String(selectedService.phoneNumber || ''),
                 category: selectedService.category || '',
                 location: selectedService.location || '',
                 thumbnails: selectedService.thumbnails || []
@@ -81,35 +87,61 @@ function UpdateService() {
         const files = e.target.files;
         if (files && files.length > 0) {
             const fileArray = Array.from(files);
+            
+            // Validate file count
+            if (fileArray.length > 4) {
+                alert("Maximum 4 images allowed");
+                return;
+            }
+            
+            // Validate file sizes and types
+            const validFiles = [];
+            const errors = [];
+            
+            fileArray.forEach((file) => {
+                if (!file.type.startsWith('image/')) {
+                    errors.push(`${file.name} is not an image file`);
+                } else if (file.size > 1024 * 1024) { // 1MB limit
+                    errors.push(`${file.name} is too large (max 1MB)`);
+                } else {
+                    validFiles.push(file);
+                }
+            });
+            
+            if (errors.length > 0) {
+                alert(errors.join('\n'));
+                if (validFiles.length === 0) {
+                    setThumbnailFiles([]);
+                    setPreviewThumbnails([]);
+                    return;
+                }
+            }
+            
             // Keep files separate from existing thumbnail URLs
-            setThumbnailFiles(fileArray);
+            setThumbnailFiles(validFiles);
 
             const previews = [];
             let loadedCount = 0;
 
-            fileArray.forEach((file, index) => {
-                if (file.type.startsWith('image/')) { // Check if file is an image
-                    const fileReader = new FileReader();
-                    fileReader.onload = () => {
-                        previews[index] = {
-                            url: fileReader.result,
-                            name: file.name,
-                            size: file.size
-                        };
-                        loadedCount++;
+            validFiles.forEach((file, index) => {
+                const fileReader = new FileReader();
+                fileReader.onload = () => {
+                    previews[index] = {
+                        url: fileReader.result,
+                        name: file.name,
+                        size: file.size
+                    };
+                    loadedCount++;
 
-                        if (loadedCount === fileArray.length) {
-                            setPreviewThumbnails(previews.filter(preview => preview !== null && preview !== undefined));
-                        }
-                    };
-                    fileReader.onerror = (error) => {
-                        console.error(`Error reading file: ${file.name}`, error);
-                        loadedCount++;
-                    };
-                    fileReader.readAsDataURL(file);
-                } else {
-                    console.error(`File ${file.name} is not an image`);
-                }
+                    if (loadedCount === validFiles.length) {
+                        setPreviewThumbnails(previews.filter(preview => preview !== null && preview !== undefined));
+                    }
+                };
+                fileReader.onerror = (error) => {
+                    console.error(`Error reading file: ${file.name}`, error);
+                    loadedCount++;
+                };
+                fileReader.readAsDataURL(file);
             });
         } else {
             setThumbnailFiles([]);
@@ -119,19 +151,47 @@ function UpdateService() {
 
     const updateServiceHandler = async (e) => {
         e.preventDefault()
-        const formData = new FormData()
-        formData.append('title', content.title)
-        formData.append('description', content.description)
-        formData.append('price', content.price)
-        formData.append('phoneNumber', content.phoneNumber)
-        formData.append('category', content.category)
-        formData.append('location', content.location)
-        // Only send new thumbnails if user selected any. Otherwise keep existing on server
-        if (thumbnailFiles.length > 0) {
-            thumbnailFiles.forEach(file => formData.append('thumbnails', file))
+        console.log("UpdateServiceHandler called", { content, serviceId, services })
+        
+        // Form validation
+        if (!content.title.trim()) {
+            alert("Title is required");
+            return;
         }
-
+        if (!content.description.trim()) {
+            alert("Description is required");
+            return;
+        }
+        if (!content.price || Number(content.price) <= 0) {
+            alert("Please enter a valid price");
+            return;
+        }
+        if (!content.phoneNumber || String(content.phoneNumber).trim() === '') {
+            alert("Phone number is required");
+            return;
+        }
+        if (!content.category) {
+            alert("Please select a category");
+            return;
+        }
+        if (!content.location.trim()) {
+            alert("Location is required");
+            return;
+        }
+        
         try {
+            const formData = new FormData()
+            formData.append('title', content.title?.trim() || '')
+            formData.append('description', content.description?.trim() || '')
+            formData.append('price', String(content.price || 0))
+            formData.append('phoneNumber', String(content.phoneNumber || '').trim())
+            formData.append('category', content.category || '')
+            formData.append('location', content.location?.trim() || '')
+            // Only send new thumbnails if user selected any. Otherwise keep existing on server
+            if (thumbnailFiles && Array.isArray(thumbnailFiles) && thumbnailFiles.length > 0) {
+                thumbnailFiles.forEach(file => formData.append('thumbnails', file))
+            }
+            
             setLoading(true)
             const token = await getToken()
             const res = await axios.put(
@@ -147,12 +207,25 @@ function UpdateService() {
 
             if (res.data.success) {
                 const updatedService = res.data.service
-                // Update both services array and selectedService
-                const updatedServices = services.map(item =>
-                    item._id === serviceId ? updatedService : item
-                )
-                dispatch(setServices(updatedServices))
+                
+                // Update all services array (for home page)
+                if (services && Array.isArray(services)) {
+                    const updatedAllServices = services.map(item =>
+                        item._id === serviceId ? updatedService : item
+                    )
+                    dispatch(setServices(updatedAllServices))
+                }
+                
+                // Update my services array (for MyServices page)
+                if (myServices && Array.isArray(myServices)) {
+                    const updatedMyServices = myServices.map(item =>
+                        item._id === serviceId ? updatedService : item
+                    )
+                    dispatch(setMyServices(updatedMyServices))
+                }
+                
                 dispatch(setSelectedService(updatedService))
+                
                 // Reflect updates locally without refresh
                 setContent((prev) => ({
                     ...prev,
@@ -164,78 +237,27 @@ function UpdateService() {
                     location: updatedService.location || '',
                     thumbnails: updatedService.thumbnails || []
                 }))
+                
                 // Clear local selections after successful save
                 setThumbnailFiles([])
                 setPreviewThumbnails([])
+                markAsStale(); // Mark data as stale to trigger refresh
                 setLoading(false)
                 navigate('/my-services')
                 alert("Service updated successfully")
             }
         } catch (error) {
             setLoading(false)
-            alert("Failed to update service")
-            console.log(error)
-        }
-    }
-
-    const togglePublishUnpublish = async () => {
-        if (!selectedService) return
-
-        const newPublishStatus = !selectedService.isPublished
-
-        try {
-            const token = await getToken()
-            const res = await axios.patch(
-                `${import.meta.env.VITE_API_URL}/api/services/toggle-publish/${serviceId}`,
-                { isPublished: newPublishStatus },
-                {
-                    withCredentials: true,
-                    headers: {
-                        Authorization: token ? `Bearer ${token}` : undefined
-                    }
-                }
-            )
-
-            if (res.data.success) {
-                const updatedService = { ...selectedService, isPublished: newPublishStatus }
-                // Update both services array and selectedService
-                const updatedServices = services.map(item =>
-                    item._id === serviceId ? updatedService : item
-                )
-                dispatch(setServices(updatedServices))
-                dispatch(setSelectedService(updatedService))
-                navigate('/my-services')
-                alert(`Service ${newPublishStatus ? "published" : "unpublished"} successfully`)
+            console.error("Error updating service:", error)
+            
+            // Show more specific error messages
+            if (error.response?.data?.message) {
+                alert(`Failed to update service: ${error.response.data.message}`)
+            } else if (error.response?.data?.errors) {
+                alert(`Failed to update service: ${error.response.data.errors.join(', ')}`)
+            } else {
+                alert("Failed to update service. Please try again.")
             }
-        } catch (error) {
-            console.log(error)
-            alert("Failed to update publish status")
-        }
-    }
-
-    const deleteService = async () => {
-        try {
-            const token = await getToken()
-            const res = await axios.delete(
-                `${import.meta.env.VITE_API_URL}/api/services/delete-service/${serviceId}`,
-                {
-                    withCredentials: true,
-                    headers: {
-                        Authorization: token ? `Bearer ${token}` : undefined
-                    }
-                }
-            )
-            if (res.data.success) {
-                // Remove the deleted service from the Redux store
-                const updatedServices = services.filter(item => item._id !== serviceId)
-                dispatch(setServices(updatedServices))
-                dispatch(setSelectedService(null)) // Clear selected service
-                navigate('/my-services')
-                alert("Service deleted successfully")
-            }
-        } catch (error) {
-            console.error("Error deleting service:", error)
-            alert("Failed to delete service")
         }
     }
 
@@ -265,15 +287,7 @@ function UpdateService() {
                 <Card className="w-full bg-white p-5 space-y-2">
                 {/* <Button onClick={() => navigate('/')} className='text-2xl cursor-pointer'><FaArrowLeft /></Button> */}
                     <h1 className='text-4xl font-bold'>Basic Service Information</h1>
-                    <p className=''>Make changes to your service here. Click publish when you're done.</p>
-                    <div className="space-x-2">
-                        <Button onClick={togglePublishUnpublish}>
-                            {selectedService.isPublished ? "Unpublish" : "Publish"}
-                        </Button>
-                        <Button variant="destructive" onClick={deleteService}>
-                            Remove Service
-                        </Button>
-                    </div>
+                    <p className=''>Make changes to your service here. Click save button when you're done.</p>
                     <div className='pt-10'>
                         <Label>Title</Label>
                         <Input
@@ -362,16 +376,41 @@ function UpdateService() {
                             multiple
                         />
                         <span className='text-sm text-red-500'>* Max 4 images, 1MB each</span>
+                        
+                        {/* Show existing thumbnails */}
+                        {selectedService?.thumbnails && selectedService.thumbnails.length > 0 && (
+                            <div className="mt-4">
+                                <p className="text-sm font-medium mb-2">Current Images ({selectedService.thumbnails.length}):</p>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {selectedService.thumbnails.map((thumbnail, index) => (
+                                        <div key={`existing-${index}`} className="relative group">
+                                            <img
+                                                src={thumbnail}
+                                                className="w-full h-32 object-cover rounded-lg border"
+                                                alt={`Current thumbnail ${index + 1}`}
+                                            />
+                                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex items-center justify-center">
+                                                <div className="opacity-0 group-hover:opacity-100 text-white text-xs text-center p-2">
+                                                    <p className="font-medium">Current Image</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* Show new selected thumbnails */}
                         {previewThumbnails.length > 0 && (
                             <div className="mt-4">
-                                <p className="text-sm font-medium mb-2">Selected Images ({previewThumbnails.length}):</p>
+                                <p className="text-sm font-medium mb-2">New Selected Images ({previewThumbnails.length}):</p>
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     {previewThumbnails.map((preview, index) => (
-                                        <div key={index} className="relative group">
+                                        <div key={`new-${index}`} className="relative group">
                                             <img
                                                 src={preview.url}
                                                 className="w-full h-32 object-cover rounded-lg border"
-                                                alt={`Thumbnail ${index + 1}`}
+                                                alt={`New thumbnail ${index + 1}`}
                                             />
                                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex items-center justify-center">
                                                 <div className="opacity-0 group-hover:opacity-100 text-white text-xs text-center p-2">
