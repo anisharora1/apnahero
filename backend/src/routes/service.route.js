@@ -3,11 +3,11 @@ import { upload } from "../middleware/multer.middleware.js";
 import { allPublishedServices, deleteService, getOwnServices, postService, togglePublishAndUnpublish, updateService } from "../controllers/service.controller.js";
 import { validateUser } from "../middleware/clerk.middleware.js";
 
-const router=Router()
+const router = Router()
 
 router.route('/create-service').post(
     validateUser,
-    upload.array('thumbnails',4),
+    upload.array('thumbnails', 4),
     postService
 )
 

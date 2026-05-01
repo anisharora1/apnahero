@@ -354,98 +354,130 @@ function MessageRoom() {
 
     if (loading) {
         return (
-            <div className='max-h-screen md:max-w-4xl mx-auto pt-10'>
-                <Card className='p-4'>
-                    <div className="text-center">Loading conversation...</div>
-                </Card>
+            <div className='flex items-center justify-center min-h-screen bg-gray-50'>
+                <div className="flex flex-col items-center gap-3 text-gray-500">
+                    <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+                    <span className="text-sm">Loading conversation...</span>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className='max-h-screen md:max-w-4xl mx-auto pt-10'>
-            <Card className='p-4'>
-                <div className='items-center mb-4 flex'>
-                    <button onClick={() => navigate(-1)} className="flex items-center text-sm text-gray-600 mr-4">
-                        <FaArrowLeft className="mr-2" size={20} />
-                    </button>
-                    {/* Avatar + Name */}
-                    {conversation?.otherParticipantInfo?.imageUrl ? (
-                        <img
-                            src={conversation.otherParticipantInfo.imageUrl}
-                            alt={conversation.otherParticipantInfo.firstName || 'User'}
-                            className="w-10 h-10 rounded-full object-cover mr-3"
-                        />
-                    ) : null}
-                    <div className="flex-1">
-                        <h1 className="text-xl font-bold">
-                            {conversation?.otherParticipantInfo?.firstName || getOtherUserRole()} • {serviceData?.title}
-                        </h1>
-                        <p className="text-sm text-gray-600">
-                            Chatting with {conversation?.otherParticipantInfo?.firstName || getOtherUserRole()}
-                        </p>
+        <div className='flex flex-col h-screen bg-gray-50'>
+            {/* Header */}
+            <div className="bg-white border-b border-gray-200 shadow-sm px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600"
+                    aria-label="Go back"
+                >
+                    <FaArrowLeft size={16} />
+                </button>
+
+                {conversation?.otherParticipantInfo?.imageUrl ? (
+                    <img
+                        src={conversation.otherParticipantInfo.imageUrl}
+                        alt={conversation.otherParticipantInfo.firstName || 'User'}
+                        className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100"
+                    />
+                ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                        {(conversation?.otherParticipantInfo?.firstName?.[0] || getOtherUserRole()[0]).toUpperCase()}
                     </div>
+                )}
+
+                <div className="flex-1 min-w-0">
+                    <h1 className="text-base font-semibold text-gray-900 truncate">
+                        {conversation?.otherParticipantInfo?.firstName || getOtherUserRole()}
+                    </h1>
+                    <p className="text-xs text-gray-400 truncate">
+                        {serviceData?.title || 'Service Chat'}
+                    </p>
                 </div>
 
-                {/* Messages Box */}
-                <div className="border border-gray-300 rounded-lg p-4 h-96 overflow-y-auto mb-4">
-                    <div className="flex flex-col space-y-4">
-                        {messages.length === 0 ? (
-                            <div className="text-center text-gray-500 mt-10">
-                                No messages yet. Start the conversation!
-                            </div>
-                        ) : (
-                            messages.map((msg) => (
-                                <div
-                                    key={msg._id}
-                                    className={`p-3 rounded-lg max-w-[70%] ${msg.senderId === user.id
-                                        ? "bg-blue-500 text-white ml-auto"
-                                        : "bg-gray-200 text-gray-800 mr-auto"
+
+            </div>
+
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2"
+                style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #e8edf5 100%)' }}
+            >
+                {messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full gap-3 text-gray-400">
+                        <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-3xl">💬</div>
+                        <p className="text-sm font-medium">No messages yet</p>
+                        <p className="text-xs">Start the conversation!</p>
+                    </div>
+                ) : (
+                    messages.map((msg) => {
+                        const isMine = msg.senderId === user.id;
+                        return (
+                            <div
+                                key={msg._id}
+                                className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}
+                            >
+                                <div className={`max-w-[72%] md:max-w-[55%] ${isMine ? 'items-end' : 'items-start'} flex flex-col gap-0.5`}>
+                                    <span className="text-[10px] text-gray-400 px-1">
+                                        {isMine ? 'You' : (conversation?.otherParticipantInfo?.firstName || getOtherUserRole())}
+                                    </span>
+                                    <div
+                                        className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                                            isMine
+                                                ? 'bg-blue-500 text-white rounded-br-sm'
+                                                : 'bg-white text-gray-800 rounded-bl-sm border border-gray-100'
                                         } ${msg.sending ? 'opacity-60' : ''}`}
-                                >
-                                    <p className="text-xs opacity-75 mb-1">
-                                        {msg.senderId === user.id ? "You" : getOtherUserRole()}
-                                    </p>
-                                    <p>{msg.content}</p>
-                                    <p className="text-xs opacity-75 mt-1">
-                                        {new Date(msg.createdAt).toLocaleTimeString()}
-                                        {msg.sending && " • Sending..."}
-                                    </p>
+                                    >
+                                        {msg.content}
+                                    </div>
+                                    <span className={`text-[10px] px-1 ${isMine ? 'text-gray-400' : 'text-gray-400'}`}>
+                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {msg.sending && ' · Sending...'}
+                                    </span>
                                 </div>
-                            ))
-                        )}
-
-                        {/* Typing Indicator */}
-                        {isTyping && (
-                            <div className=" text-sm  text-gray-500 italic">
-                                {getOtherUserRole()} is typing...
                             </div>
-                        )}
+                        );
+                    })
+                )}
 
-                        <div ref={messagesEndRef} />
+                {/* Typing Indicator */}
+                {isTyping && (
+                    <div className="flex justify-start">
+                        <div className="bg-white border border-gray-100 shadow-sm px-4 py-2.5 rounded-2xl rounded-bl-sm flex items-center gap-1">
+                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        </div>
                     </div>
-                </div>
+                )}
 
-                {/* Input Box */}
-                <div className="flex w-full gap-2">
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Bar */}
+            <div className="bg-white border-t border-gray-200 shadow-[0_-2px_12px_rgba(0,0,0,0.06)] px-4 py-4">
+                <div className="flex items-center gap-3 max-w-4xl mx-auto">
                     <input
                         type="text"
-                        className="flex-1 border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 bg-white border-2 border-gray-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-blue-400 transition-all placeholder:text-gray-400 shadow-sm disabled:opacity-50 disabled:bg-gray-50"
                         value={newMessage}
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
-                        placeholder="Type a message..."
+                        placeholder={socketConnected ? "Type a message..." : "Connecting..."}
                         disabled={!conversation || !socketConnected}
                     />
                     <button
                         onClick={handleSend}
                         disabled={!newMessage.trim() || !conversation || !socketConnected}
-                        className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-11 h-11 rounded-full bg-blue-500 hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center text-white shadow-sm transition-all hover:scale-105 active:scale-95"
+                        aria-label="Send message"
                     >
-                        Send
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 translate-x-0.5">
+                            <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                        </svg>
                     </button>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 }

@@ -101,24 +101,25 @@ function ViewService() {
 
     return (
         <div className='pt-14'>
-            <div className='max-w-4xl mx-auto md:p-10 p-6'>
-                <Breadcrumb className='mb-6'>
+            <div className='max-w-4xl mx-auto md:px-10 px-4 py-6 pb-28'>
+                <Breadcrumb className='mb-5'>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <Link to="/">Home</Link>
+                            <Link to="/" className="hover:text-gray-900 transition-colors">Home</Link>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <Link to="/services">Services</Link>
+                            <Link to="/services" className="hover:text-gray-900 transition-colors">Services</Link>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>{selectedService?.title}</BreadcrumbPage>
+                            <BreadcrumbPage className="max-w-[200px] truncate">{selectedService?.title}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                {/* Featured Image */}
-                <div className="relative h-60 overflow-hidden">
+
+                {/* Image Carousel */}
+                <div className="relative h-72 md:h-96 overflow-hidden rounded-2xl shadow-md bg-gray-100">
                     {hasImages && imageUrls.map((url, index) => (
                         <div
                             key={index}
@@ -132,7 +133,7 @@ function ViewService() {
                             <img
                                 src={url}
                                 alt={`Slide ${index + 1}`}
-                                className="w-full h-full object-cover rounded-2xl"
+                                className="w-full h-full object-contain"
                                 onError={(e) => {
                                     e.target.src = 'https://via.placeholder.com/800x400?text=Image+Not+Found';
                                 }}
@@ -143,7 +144,7 @@ function ViewService() {
                     {/* Navigation Arrows */}
                     <button
                         onClick={goToPrevious}
-                        className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-gray-200 bg-opacity-50 hover:bg-opacity-70 text-white p-1 rounded-full transition-all duration-200 hover:scale-110 disabled:opacity-50"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow transition-all duration-200 hover:scale-110 disabled:opacity-30"
                         disabled={!hasImages || imageUrls.length <= 1}
                         aria-label="Previous image"
                     >
@@ -152,53 +153,98 @@ function ViewService() {
 
                     <button
                         onClick={goToNext}
-                        className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-gray-200 bg-opacity-50 hover:bg-opacity-70 text-white p-1 rounded-full transition-all duration-200 hover:scale-110 disabled:opacity-50"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow transition-all duration-200 hover:scale-110 disabled:opacity-30"
                         disabled={!hasImages || imageUrls.length <= 1}
                         aria-label="Next image"
                     >
                         <ChevronRight size={20} />
                     </button>
 
-                    {/* Image Counter */}
-                    <div className="absolute top-1 right-1 bg-gray-800 bg-opacity-50 text-white px-1 py-1 rounded-full text-sm">
-                        {hasImages ? `${currentIndex + 1} / ${imageUrls.length}` : '0 / 0'}
+                    {/* Dot Indicators */}
+                    {hasImages && imageUrls.length > 1 && (
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                            {imageUrls.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentIndex(i)}
+                                    className={`w-2 h-2 rounded-full transition-all duration-200 ${i === currentIndex ? 'bg-white w-4' : 'bg-white/50'}`}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Counter Badge */}
+                    <div className="absolute top-3 right-3 bg-black/50 text-white px-2.5 py-1 rounded-full text-xs font-medium">
+                        {hasImages ? `${currentIndex + 1} / ${imageUrls.length}` : '—'}
                     </div>
                 </div>
-                <div className='mt-5 min-h-40 text-center p-4  border-gray-50 border-2 rounded-2xl mb-4'>
-                    {/* Service Header */}
-                    <div className="flex text-left justify-between">
-                        <h1 className="text-xl leading-6 md:font-bold font-semibold tracking-tight mb-4 capitalize truncate" title={selectedService?.title}>{selectedService?.title}</h1>
-                        <div className="text-sm text-muted-foreground">{timeElapsed ? `Published ${timeElapsed}` : ''}</div>
+
+                {/* Info Card */}
+                <div className='mt-5 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm'>
+                    {/* Title + Time */}
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                        <h1 className="text-2xl font-bold tracking-tight capitalize leading-tight" title={selectedService?.title}>
+                            {selectedService?.title}
+                        </h1>
+                        <span className="text-xs text-gray-400 whitespace-nowrap mt-1 shrink-0">
+                            {timeElapsed ? `Published ${timeElapsed}` : ''}
+                        </span>
                     </div>
-                    <div className='flex justify-between items-center'>
-                        <h2 className='text-2xl font-bold'>₹{selectedService?.price}</h2>
-                        <p className='text-lg text-muted-foreground flex items-center gap-1 capitalize truncate' title={selectedService?.location || "Unknown"}>
-                            <span><IoLocationOutline /></span>
+
+                    <hr className="border-gray-100 mb-4" />
+
+                    {/* Price · Location · Badge */}
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <h2 className='text-3xl font-extrabold text-gray-900'>₹{selectedService?.price}</h2>
+                        <p className='text-sm text-gray-500 flex items-center gap-1 capitalize' title={selectedService?.location || "Unknown"}>
+                            <IoLocationOutline className="text-base shrink-0" />
                             <span className="truncate max-w-[14rem] md:max-w-[20rem]">{selectedService?.location || "Unknown"}</span>
                         </p>
-                        <Badge className='bg-black-300 text-black text-xl'>{selectedService?.category}</Badge>
-
+                        <Badge className='bg-gray-900 text-white text-sm px-3 py-1 rounded-full'>{selectedService?.category}</Badge>
                     </div>
-
-                </div>
-                <div className='border-x-2 border-b-2 rounded min-h-50'>
-                    <h2 className="text-2xl text-center font-bold text-gray-400 mb-4 tracking-wide">Service Details</h2>
-                    <p className='pl-4 pb-8 font-semibold tracking-wide' dangerouslySetInnerHTML={{ __html: selectedService?.description }} />
-
                 </div>
 
-
-
+                {/* Description Card */}
+                <div className='mt-4 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden'>
+                    <div className="px-5 py-4 border-b border-gray-100">
+                        <h2 className="text-lg font-semibold text-gray-800">Service Details</h2>
+                    </div>
+                    <div
+                        className='px-5 py-5 text-gray-700 leading-relaxed prose prose-sm max-w-none'
+                        dangerouslySetInnerHTML={{ __html: selectedService?.description }}
+                    />
+                </div>
             </div>
-            <div className='flex justify-center mb-1 items-center p-4 fixed bottom-0 left-0 w-full bg-white  border-t-2 border-gray-200 gap-4 md:gap-10 z-50'>  
-                <Button disabled={!selectedService?.phoneNumber}>
-                    <span><PhoneOutgoing/></span>
-                    <Link to={`tel:${selectedService?.phoneNumber || ''}`}>Call now</Link>
-                </Button>
-                <Button disabled={!selectedService?._id}>
-                    <span><MessageCircle/></span>
-                    <Link to={selectedService?._id ? `/message/${selectedService._id}` : '#'}> Chat with us</Link>
-                </Button>
+
+            {/* Sticky CTA Bar */}
+            <div className='flex justify-center items-center px-4 py-3 fixed bottom-0 md:bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t border-gray-200 gap-4 z-40'>
+                <div className="flex gap-4 w-full max-w-sm">
+                    <Button
+                        onClick={() => {
+                            if (selectedService?.phoneNumber) {
+                                window.location.href = `tel:${selectedService.phoneNumber}`
+                            }
+                        }}
+                        disabled={!selectedService?.phoneNumber}
+                        className="flex-1 gap-2 bg-gray-900 hover:bg-gray-700 text-white rounded-xl h-11 transition-colors"
+                    >
+                        <PhoneOutgoing size={17} />
+                        Call Now
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            if (selectedService?._id) {
+                                navigate(`/chat/${selectedService._id}`)
+                            }
+                        }}
+                        disabled={!selectedService?._id}
+                        variant="outline"
+                        className="flex-1 gap-2 border-gray-800 text-gray-800 hover:bg-gray-900 hover:text-white transition-colors rounded-xl h-11"
+                    >
+                        <MessageCircle size={17} />
+                        Chat
+                    </Button>
+                </div>
             </div>
         </div>
     )

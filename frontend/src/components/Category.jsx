@@ -31,16 +31,19 @@ function Category() {
     <div className='mt-12 mb-4'>
       {/* Categories Grid */}
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-wrap -space-y-4">
+        <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
           {categories.map((category) => {
             const IconComponent = category.icon;
             return (
-
-              <div key={category.id} className="p-5 flex flex-col items-center justify-center text-center">
-                <div onClick={()=>handleSearch(category.name)} className={`${category.color} p-3 rounded-full mb-2 group-hover:scale-110 transition-transform duration-200`}>
+              <div
+                key={category.id}
+                onClick={() => handleSearch(category.name)}
+                className="group flex flex-col items-center justify-center text-center p-3 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+              >
+                <div className={`${category.color} p-3 rounded-full mb-2 group-hover:scale-110 transition-transform duration-200`}>
                   <IconComponent className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-sm font-medium text-gray-900 group-hover:text-gray-700">
+                <h3 className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-gray-900">
                   {category.name}
                 </h3>
               </div>

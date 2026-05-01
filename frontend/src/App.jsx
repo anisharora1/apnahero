@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
 import About from './pages/About'
@@ -18,19 +18,29 @@ const UpdateService = React.lazy(() => import('./pages/UpdateService'))
 const MessageRoom = React.lazy(() => import('./pages/MessageRoom'))
 const MessageList = React.lazy(() => import('./pages/MessageList'))
 import PageTracker from './components/PageTracker'
+import MobileBottomNav from './components/MobileBottomNav'
 import { initGA } from './utils/analytics'
 // Removed AuthSync as Clerk components are reactive
 
 
-// Wrapper component that includes notification system
-const AppWithNotifications = ({ children }) => (
-  <NotificationProvider>
-    <PageTracker />
-    <DataRefreshManager />
-    {children}
-    <NotificationManager />
-  </NotificationProvider>
-)
+const AppWithNotifications = ({ children }) => {
+  const location = useLocation()
+  const isHiddenRoute = 
+        /^\/chat\/[a-zA-Z0-9_-]+/.test(location.pathname) || 
+        /^\/services\/[a-zA-Z0-9_-]+/.test(location.pathname)
+
+  return (
+    <NotificationProvider>
+      <PageTracker />
+      <DataRefreshManager />
+      <div className={`flex flex-col min-h-screen ${isHiddenRoute ? '' : 'pb-16 md:pb-0'}`}>
+        {children}
+      </div>
+      <MobileBottomNav />
+      <NotificationManager />
+    </NotificationProvider>
+  )
+}
 
 
 function App() {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const FAQSection = () => {
   const [openItem, setOpenItem] = useState(null);
@@ -45,64 +45,71 @@ const FAQSection = () => {
     const message = "Hello, I have a question about the platform. Please help me.";
     const url = `https://wa.me/919117662441?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
-  }
+  };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6">
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-green-600 to-blue-600 px-4 sm:px-8 py-8 sm:py-10 text-white">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2 sm:mb-3">Frequently Asked Questions</h2>
-        </div>
+    <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="px-8 md:px-12 pt-10 pb-6 border-b border-gray-100">
+        <span className="text-xs font-semibold tracking-widest text-gray-400 uppercase">FAQ</span>
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mt-2">
+          Frequently Asked Questions
+        </h2>
+        <p className="text-gray-500 text-sm mt-1">Everything you need to know about the platform.</p>
+      </div>
 
-        {/* FAQ Items */}
-        <div className="divide-y divide-gray-200">
-          {faqData.map((item) => (
-            <div key={item.id} className="transition-all duration-200 hover:bg-gray-50">
-              <button
-                onClick={() => toggleItem(item.id)}
-                className="w-full px-4 sm:px-8 py-4 sm:py-6 text-left focus:outline-none transition-all duration-200 active:bg-gray-300"
-              >
-                <div className="flex items-start justify-between">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 pr-4 sm:pr-8 leading-relaxed">
+      {/* FAQ Items */}
+      <div className="divide-y divide-gray-100">
+        {faqData.map((item, index) => (
+          <div
+            key={item.id}
+            className={`transition-colors duration-200 ${openItem === item.id ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+          >
+            <button
+              onClick={() => toggleItem(item.id)}
+              className="w-full px-8 md:px-12 py-5 text-left focus:outline-none"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-xs font-bold text-gray-300 w-5 shrink-0">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="text-sm md:text-base font-semibold text-gray-800 leading-snug">
                     {item.question}
                   </h3>
-                  <div className="flex-shrink-0 ml-2 sm:ml-4 mt-1">
-                    {openItem === item.id ? (
-                      <ChevronUp className="w-5 h-5 text-green-600 transition-transform duration-200" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-400 transition-transform duration-200" />
-                    )}
-                  </div>
                 </div>
-              </button>
-              
-              {/* Answer with smooth animation */}
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                openItem === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-              }`}>
-                <div className="px-4 sm:px-8 pb-4 sm:pb-6">
-                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border-l-3 border-gray-700">
-                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                      {item.answer}
-                    </p>
-                  </div>
-                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-400 shrink-0 transition-transform duration-300 ${openItem === item.id ? 'rotate-180' : ''}`}
+                />
+              </div>
+            </button>
+
+            {/* Answer */}
+            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              openItem === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            }`}>
+              <div className="px-8 md:px-12 pb-5 pl-[4.5rem]">
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed border-l-2 border-gray-900 pl-4">
+                  {item.answer}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
 
-        {/* Footer */}
-        <div className="bg-gray-50 px-4 sm:px-8 py-5 sm:py-6 text-center border-t border-gray-200">
-          <p className="text-gray-600 mb-3 text-sm sm:text-base">Still have questions?</p>
-          <button onClick={handleGetHelp} className="bg-green-600 hover:bg-green-700 active:bg-green-800 text-white px-6 py-2.5 sm:py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-20 text-sm sm:text-base min-h-[44px] sm:min-h-auto">
-            Get Help
-          </button>
-        </div>
+      {/* Footer */}
+      <div className="px-8 md:px-12 py-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-gray-500 text-sm">Still have questions? We're here to help.</p>
+        <button
+          onClick={handleGetHelp}
+          className="bg-gray-900 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl font-medium text-sm transition-colors duration-200 focus:outline-none"
+        >
+          Get Help on WhatsApp
+        </button>
       </div>
     </div>
   );
 };
 
-export default FAQSection;
+export default FAQSection;

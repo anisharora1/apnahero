@@ -95,15 +95,14 @@ function ServiceCard({ service }) {
                 <h2 className='text-lg font-bold'>₹{service.price}</h2>
                 <Badge variant='secondary' className='bg-amber-300'>{service.category}</Badge>
             </div>
-            <div className='flex gap-4'>
-                <h3 className='flex items-center gap-0.5 capitalize truncate' title={service.location}>
+            <div className='flex items-center justify-between gap-4'>
+                <h3 className='flex items-center gap-0.5 capitalize truncate text-sm text-gray-600' title={service.location}>
                     <span><IoLocationOutline /></span>
                     <span className="truncate max-w-[12rem] md:max-w-[16rem]">{service.location}</span>
                 </h3>
-                <p className="text-sm  mt-2">
+                <p className="text-sm text-gray-500 whitespace-nowrap shrink-0">
                     {timeElapsed}
                 </p>
-
             </div>
         </div>
     )

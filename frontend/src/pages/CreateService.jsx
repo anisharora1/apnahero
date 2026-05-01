@@ -161,50 +161,93 @@ function CreateService() {
         buttons: ["bold", "italic", "underline"], // only these buttons will show
     };
     return (
-        <div className='pb-10 px-3 md:pt-20'>
-            
-            <div className='max-w-6xl mx-auto mt-8'>
-               
-                <Card className="w-full bg-white p-5 space-y-2">
-                    <h1 className=' text-4xl font-bold '>Basic Service Information</h1>
-                    <p className=''>Make changes to your services here. Click publish when you're done.</p>
-                    <div className='pt-10'>
-                        <Label>Title</Label>
-                        <Input type="text" placeholder="Enter a title" name="title" value={content.title} onChange={handleChange} />
-                    </div>
+        <div className='min-h-screen bg-gray-50 pt-20 pb-16 px-4 md:px-8'>
+            <div className='max-w-4xl mx-auto'>
+
+                {/* Page Header */}
+                <div className='flex items-center justify-between mb-8'>
                     <div>
-                        <Label>Description</Label>
-                        <JoditEditor
-                            ref={editor}
-                            value={content.description}
-                            config={config}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={(newContent) => setContent((prev) => ({ ...prev, description: newContent }))}// save on blur
-                            onChange={(newContent) => { }}
+                        <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>Post a Service</h1>
+                        <p className='text-sm text-gray-500 mt-1'>Fill in the details to publish your service</p>
+                    </div>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className='flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all shadow-sm'
+                        aria-label='Go back'
+                        title='Go back'
+                    >
+                        <FaArrowLeft size={16} />
+                    </button>
+                </div>
+
+                {/* Form Card */}
+                <div className="bg-white border border-gray-200 rounded-3xl shadow-sm p-6 md:p-10 space-y-8">
+
+                    {/* Title */}
+                    <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Service Title</Label>
+                        <Input
+                            type="text"
+                            placeholder="e.g., Professional Plumbing Services"
+                            name="title"
+                            value={content.title}
+                            onChange={handleChange}
+                            className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white"
                         />
                     </div>
-                    <div className='pt-10 flex gap-5'>
-                        <div>
-                            <Label>Price:</Label>
-                            <Input type="number" placeholder="Enter a price" name="price" value={content.price} onChange={handleChange} />
 
-                        </div>
-                        <div>
-                            <Label>Phone:</Label>
-                            <Input type="tel" placeholder="Enter a phone number" name="phoneNumber" value={content.phoneNumber} onChange={handleChange} />
-
+                    {/* Description */}
+                    <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Description</Label>
+                        <div className="rounded-xl overflow-hidden border border-gray-200">
+                            <JoditEditor
+                                ref={editor}
+                                value={content.description}
+                                config={config}
+                                tabIndex={1}
+                                onBlur={(newContent) => setContent((prev) => ({ ...prev, description: newContent }))}
+                                onChange={() => { }}
+                            />
                         </div>
                     </div>
-                    <div className='pt-10 flex gap-5'>
-                        <div>
-                            <Label>Category</Label>
+
+                    {/* Price & Phone Grid */}
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Price (₹)</Label>
+                            <Input
+                                type="number"
+                                placeholder="0.00"
+                                name="price"
+                                value={content.price}
+                                onChange={handleChange}
+                                className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Phone Number</Label>
+                            <Input
+                                type="tel"
+                                placeholder="+91"
+                                name="phoneNumber"
+                                value={content.phoneNumber}
+                                onChange={handleChange}
+                                className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Category & Location Grid */}
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Category</Label>
                             <Select onValueChange={selectCategory}>
-                                <SelectTrigger className="w-[180px]">
+                                <SelectTrigger className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white w-full">
                                     <SelectValue placeholder="Select a category" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                    <SelectLabel>Category</SelectLabel>
+                                        <SelectLabel>Categories</SelectLabel>
                                         <SelectItem value="Helper">Helper</SelectItem>
                                         <SelectItem value="Mobiles">Mobiles</SelectItem>
                                         <SelectItem value="Teaching">Teaching</SelectItem>
@@ -214,44 +257,53 @@ function CreateService() {
                                         <SelectItem value="Books">Books</SelectItem>
                                         <SelectItem value="Bikes">Bikes</SelectItem>
                                         <SelectItem value="Other">Other</SelectItem>
-
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
-
                         </div>
-
-                        <div>
-                            <Label>Location:</Label>
-                            <Input type="text" placeholder="Enter a location" name="location" value={content.location} onChange={handleChange} />
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700">Location</Label>
+                            <Input
+                                type="text"
+                                placeholder="City, Neighborhood"
+                                name="location"
+                                value={content.location}
+                                onChange={handleChange}
+                                className="h-11 rounded-xl bg-gray-50 border-gray-200 focus:bg-white"
+                            />
                         </div>
                     </div>
-                    <div>
-                        <Label>Thumbnail</Label>
-                        <Input
-                            id="file"
-                            type="file"
-                            onChange={selectThumbnail}
-                            accept="image/*"
-                            className="w-fit"
-                            multiple
-                        />
-                        <span className='text-sm text-red-500'>* Max 4 images, 1MB each</span>
+
+                    {/* Thumbnails */}
+                    <div className="space-y-3">
+                        <Label className="text-sm font-semibold text-gray-700">Images</Label>
+                        <div className="flex flex-col gap-2">
+                            <Input
+                                id="file"
+                                type="file"
+                                onChange={selectThumbnail}
+                                accept="image/*"
+                                className="w-full md:w-fit h-11 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 bg-white"
+                                multiple
+                            />
+                            <span className='text-xs text-gray-500'>* Max 4 images, 1MB each</span>
+                        </div>
+
                         {previewThumbnails.length > 0 && (
-                            <div className="mt-4">
-                                <p className="text-sm font-medium mb-2">Selected Images ({previewThumbnails.length}):</p>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                <p className="text-sm font-medium text-gray-700 mb-3">Selected Images ({previewThumbnails.length})</p>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {previewThumbnails.map((preview, index) => (
-                                        <div key={index} className="relative group">
+                                        <div key={index} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square">
                                             <img
                                                 src={preview.url}
-                                                className="w-full h-32 object-cover rounded-lg border"
+                                                className="w-full h-full object-cover"
                                                 alt={`Thumbnail ${index + 1}`}
                                             />
-                                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-lg flex items-center justify-center">
-                                                <div className="opacity-0 group-hover:opacity-100 text-white text-xs text-center p-2">
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end p-2">
+                                                <div className="text-white text-xs w-full">
                                                     <p className="font-medium truncate">{preview.name}</p>
-                                                    <p>{(preview.size / 1024).toFixed(1)} KB</p>
+                                                    <p className="text-gray-300">{(preview.size / 1024).toFixed(1)} KB</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -260,16 +312,26 @@ function CreateService() {
                             </div>
                         )}
                     </div>
-                    <div className='flex gap-3'>
-                        <Button variant="outline" onClick={() => navigate('/')}>Back</Button>
-                        <Button onClick={createServiceHandler}>
-                            {
-                                loading ? "Please Wait" : "Save"
-                            }
+
+                    {/* Actions */}
+                    <div className='flex flex-col-reverse md:flex-row items-center justify-end gap-3 pt-6 border-t border-gray-100'>
+                        <Button
+                            variant="outline"
+                            onClick={() => navigate(-1)}
+                            className="w-full md:w-auto h-11 rounded-xl border-gray-200 hover:bg-gray-50 text-gray-700"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={createServiceHandler}
+                            disabled={loading}
+                            className="w-full md:w-auto h-11 rounded-xl bg-gray-900 hover:bg-gray-800 text-white px-8 transition-colors"
+                        >
+                            {loading ? "Publishing..." : "Publish Service"}
                         </Button>
                     </div>
 
-                </Card>
+                </div>
             </div>
         </div>
     )
